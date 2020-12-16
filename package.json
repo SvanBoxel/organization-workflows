@@ -1,0 +1,57 @@
+{
+  "name": "central-workflows-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Probot app",
+  "author": "Sebass van Boxel <svboxel@gmail.com>",
+  "license": "ISC",
+  "repository": "https://github.com/SvanBoxel/central-workflows-bot.git",
+  "homepage": "https://github.com/SvanBoxel/central-workflows-bot",
+  "bugs": "https://github.com/SvanBoxel/central-workflows-bot/issues",
+  "keywords": [
+    "probot",
+    "github",
+    "probot-app"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc && (tsc -w --preserveWatchOutput & nodemon)",
+    "dev": "npm run build:watch",
+    "start": "probot run ./lib/index.js",
+    "lint": "standard **/*.ts --fix",
+    "test": "jest && standard **/*.ts",
+    "test:watch": "jest --watch --notify --notifyMode=change --coverage"
+  },
+  "dependencies": {
+    "probot": "^9.5.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.0",
+    "@types/nock": "^11.1.0",
+    "@types/node": "^13.1.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint-plugin-typescript": "^0.14.0",
+    "jest": "^24.9.0",
+    "nock": "^12.0.0",
+    "nodemon": "^2.0.0",
+    "smee-client": "^1.1.0",
+    "standard": "^14.3.1",
+    "ts-jest": "^25.1.0",
+    "typescript": "^3.6.4"
+  },
+  "engines": {
+    "node": ">= 8.3.0"
+  },
+  "standard": {
+    "parser": "@typescript-eslint/parser",
+    "env": [
+      "jest"
+    ],
+    "plugins": [
+      "typescript"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
