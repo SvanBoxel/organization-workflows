@@ -17,6 +17,8 @@ mongoose.connect(mongoUri, {
   useUnifiedTopology: true
 })
 
+console.log("DB connection established");
+
 module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
   const router = getRouter(app_route)
 
