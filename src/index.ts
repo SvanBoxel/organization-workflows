@@ -90,7 +90,12 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       head_sha: run.sha,
       name,
       details_url: `https://github.com/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
-      status: 'in_progress'
+      status: 'in_progress',
+      actions: [{
+        label: "re-run",
+        description: "re-run workflow",
+        identifier: "hello"
+      }]
     })
 
     if (require) {
