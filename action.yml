@@ -25,6 +25,6 @@ runs:
           "${{ inputs.callback_url }}" \
           -d id=${{ inputs.id }} \
           -d run_id=${{ inputs.run_id }} \
-          -d name=${{ inputs.name }} \
+          --data-urlencode "name=${{ env.name || github.workflow }}" \
           -d enforce=${{ inputs.enforce }}
       shell: bash
