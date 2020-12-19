@@ -25,6 +25,16 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
     - name: Markdown Lint  
 ```
 
+> ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See below)
+
+### App permissions
+This app needs the following permissions:
+
+- **Repository admimistration**: To set or enforce protected branch settings.
+- **Checks**: To interact with the checks API.
+- **Contents**: To checkout the code in a workflow run.
+- **Metadata**: To retrieve repository metadata information.
+
 ## How it works
 When installed in an organization, the app's logic is triggered by any `push` event. When this happens, the app collects all relevant information and [dispatches](https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#repository_dispatch) this to the `.github` repository of your organization. Here, all central workflow files configured with the `repository_dispatch` event and `org-workflow-bot` type are triggered.
 
