@@ -1,6 +1,6 @@
-import * as mongoose from 'mongoose';
+import * as mongoose from 'mongoose'
 
-const runExpiry = 60 * 60 * 24 * 90; // 90 days
+const runExpiry = 60 * 60 * 24 * 90 // 90 days
 
 export interface IRun extends mongoose.Document {
   sha: string;
@@ -30,10 +30,10 @@ export const RunSchema = new mongoose.Schema({
     owner: String,
     name: String,
     full_name: String
-  },
-});
+  }
+})
 
-RunSchema.index({ createdAt: 1 }, { expireAfterSeconds: runExpiry });
-const Run = mongoose.model<IRun>('Run', RunSchema);
+RunSchema.index({ createdAt: 1 }, { expireAfterSeconds: runExpiry })
+const Run = mongoose.model<IRun>('Run', RunSchema)
 
-export default Run;
+export default Run

@@ -1,28 +1,28 @@
-import { Context } from "probot" // eslint-disable-line no-unused-vars
+import { Context } from 'probot' // eslint-disable-line no-unused-vars
 
-const organization_repository = '.github';
+const organization_repository = '.github'
 
-async function enforceProtection( 
-  octokit: Context["octokit"], 
-  repository: { owner: string, repo: string }, 
-  context_name: string, 
+async function enforceProtection (
+  octokit: Context['octokit'],
+  repository: { owner: string, repo: string },
+  context_name: string,
   enforce_admin = false
 ) {
   const repo = await octokit.repos.get({
     ...repository,
     mediaType: {
-      previews: ["symmetra"],
-    },
-  });
-  let protection: any = null;
-  try { 
+      previews: ['symmetra']
+    }
+  })
+  let protection: any = null
+  try {
     protection = await octokit.repos.getBranchProtection({
       ...repository,
       branch: repo.data.default_branch
-    });
+    })
   } catch (e) { }
 
-  let enforce_admins = protection && protection.data.enforce_admins.enabled;
+  let enforce_admins = protection && protection.data.enforce_admins.enabled
   if (enforce_admins === true) {
     enforce_admin = true
   } else if (repository.repo === organization_repository) {
@@ -49,4 +49,4 @@ async function enforceProtection(
   })
 }
 
-export default enforceProtection;
+export default enforceProtection

@@ -1,31 +1,32 @@
-import { Probot } from "probot" 
-import enforceProtection from './enforce-protection';
+import { Probot } from 'probot'
+import enforceProtection from './enforce-protection'
 
-import mongoose from 'mongoose';
-import Runs from "./runs.model";
+import mongoose from 'mongoose'
+import Runs from './runs.model'
 
-const repository_dispatch_type = 'org-workflow-bot';
-const organization_repository = '.github';
-const app_route = "/org-workflows";
-const mongoUri = process.env.DB_HOST || "localhost";
+const repository_dispatch_type = 'org-workflow-bot'
+const organization_repository = '.github'
+const app_route = '/org-workflows'
+const mongoUri = process.env.DB_HOST || 'localhost'
 
 mongoose.connect(mongoUri, {
   user: process.env.DB_USER,
   pass: process.env.DB_PASS,
   useFindAndModify: false,
-  useNewUrlParser: true
-});
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 
 module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
-  const router = getRouter(app_route);
+  const router = getRouter(app_route)
 
   app.on('push', async (context) => {
-    const webhook = await context.octokit.apps.getWebhookConfigForApp();
-    
-    const sha = context.payload.after;
+    const webhook = await context.octokit.apps.getWebhookConfigForApp()
+
+    const sha = context.payload.after
 
     const token = await context.octokit.apps.createInstallationAccessToken({ installation_id: context?.payload?.installation?.id || 0 })
- 
+
     const data = {
       sha,
       callback_url: `${webhook.data.url}${app_route}/register`,
@@ -33,10 +34,10 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
         owner: context.payload.repository.owner.login,
         name: context.payload.repository.name,
         full_name: context.payload.repository.full_name
-      },
-    };
+      }
+    }
 
-    const { _id } = await Runs.create(data);
+    const { _id } = await Runs.create(data)
 
     await context.octokit.repos.createDispatchEvent({
       owner: context.payload.repository.owner.login,
@@ -47,17 +48,14 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
         ...data,
         token: token.data.token
       }
-    });
+    })
   })
 
   app.on('workflow_run.completed', async (context) => {
-    if (context.payload.repository.name !== organization_repository) return;
-    
-    const run = await Runs.findOne({ "check.run_id": context?.payload?.workflow_run?.id });
+    if (context.payload.repository.name !== organization_repository) return
 
-    if (!run) return;
-
-    context.log('finishing check...', run._id);
+    const run = await Runs.findOne({ 'check.run_id': context?.payload?.workflow_run?.id })
+    if (!run) return
 
     const data: any = {
       owner: run.repository.owner,
@@ -70,29 +68,28 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
 
     await context.octokit.checks.update(data)
   })
-  
-  app.on('check_run.rerequested', async (context) => {
-    const run = await Runs.findOne({ "check.checks_run_id": context?.payload?.check_run?.id });
 
-    if (!run) return;
+  app.on('check_run.rerequested', async (context) => {
+    const run = await Runs.findOne({ 'check.checks_run_id': context?.payload?.check_run?.id })
+    if (!run) return
 
     return await context.octokit.actions.reRunWorkflow({
       owner: run.repository.owner,
-      repo: organization_repository, 
+      repo: organization_repository,
       run_id: run?.check?.run_id || 0
     })
   })
-  
-  router.get("/register", async (req: any, res: any) => {
+
+  router.get('/register', async (req: any, res: any) => {
     let octokit = await app.auth()
     const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
     octokit = await app.auth(installation.data.id)
 
-    const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query;
-    const run = await Runs.findById((req.query.id || "").toString());
-    
-    if (!run) return res.sendStatus(401);
-    if (run.sha !== sha) res.sendStatus(404); // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random) 
+    const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query
+    const run = await Runs.findById((req.query.id || '').toString())
+
+    if (!run) return res.sendStatus(404)
+    if (run.sha !== sha) res.sendStatus(404) // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random)
 
     const data: any = {
       owner: run.repository.owner,
@@ -100,10 +97,10 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       head_sha: run.sha,
       name,
       details_url: `https://github.com/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
-      status: 'in_progress',
+      status: 'in_progress'
     }
 
-    let content; 
+    let content
 
     if (documentation) {
       try {
@@ -112,15 +109,15 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
           repo: organization_repository,
           path: documentation
         })
-        
-        // @ts-ignore 
+
+        // @ts-ignore
         content = Buffer.from(docs.data.content, docs.data.encoding).toString()
         data.output = {
           title: name,
-          summary: content,
+          summary: content
         }
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     }
 
@@ -128,11 +125,11 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
 
     if (require === 'true') {
       enforceProtection(
-        octokit, 
-        { owner: run.repository.owner, repo: run.repository.name},
-        name, 
+        octokit,
+        { owner: run.repository.owner, repo: run.repository.name },
+        name,
         enforce_admin === 'true'
-      ) 
+      )
     }
 
     await Runs.findByIdAndUpdate(id, {
@@ -143,6 +140,6 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       }
     })
 
-    res.sendStatus(200);
-  });
+    res.sendStatus(200)
+  })
 }
