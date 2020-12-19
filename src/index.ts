@@ -2,7 +2,7 @@ import { Probot } from "probot"
 import enforceProtection from './enforce-protection';
 
 import mongoose from 'mongoose';
-import Runs from "./runs-schema";
+import Runs from "./runs.model";
 
 const repository_dispatch_type = 'org-workflow-bot';
 const organization_repository = '.github';
@@ -74,15 +74,11 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
     const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
     octokit = await app.auth(installation.data.id)
 
-    let id = (req.query.id || "").toString();
-    let run_id = req.query.run_id
-    let name = req.query.name
-    let require = req.query.require === 'true'
-    let enforce_admin = req.query.enforce_admin === 'true'
-
-    const run = await Runs.findById(id);
+    const { id, run_id, name, sha, require, enforce_admin } = req.query;
+    const run = await Runs.findById((req.query.id || "").toString());
     
     if (!run) return;
+    if (run.sha !== sha) return; // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random) 
 
     const checks_run = await octokit.checks.create({
       owner: run.repository.owner,
@@ -98,12 +94,12 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       }]
     })
 
-    if (require) {
+    if (require === 'true') {
       enforceProtection(
         octokit, 
         { owner: run.repository.owner, repo: run.repository.name},
         name, 
-        enforce_admin
+        enforce_admin === 'true'
       ) 
     }
 
