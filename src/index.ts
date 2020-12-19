@@ -1,4 +1,4 @@
-import { Probot } from 'probot'
+import { Probot } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import enforceProtection from './enforce-protection'
 
 import mongoose from 'mongoose'
@@ -22,9 +22,7 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
 
   app.on('push', async (context) => {
     const webhook = await context.octokit.apps.getWebhookConfigForApp()
-
     const sha = context.payload.after
-
     const token = await context.octokit.apps.createInstallationAccessToken({ installation_id: context?.payload?.installation?.id || 0 })
 
     const data = {
@@ -100,7 +98,6 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       status: 'in_progress'
     }
 
-    let content
 
     if (documentation) {
       try {
@@ -110,12 +107,8 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
           path: documentation
         })
 
-        // @ts-ignore
-        content = Buffer.from(docs.data.content, docs.data.encoding).toString()
-        data.output = {
-          title: name,
-          summary: content
-        }
+        const summary = Buffer.from((docs.data as any).content, (docs.data as any).encoding).toString()
+        data.output = { title: name, summary }
       } catch (e) {
         console.error(e)
       }

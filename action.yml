@@ -34,5 +34,6 @@ runs:
           -d sha=${{ inputs.sha }} \
           --data-urlencode "name=${{ env.name || github.workflow }}" \
           --data-urlencode "documentation=${{ inputs.documentation }}" \
+
           -d enforce=${{ inputs.enforce }}
       shell: bash

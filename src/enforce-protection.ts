@@ -1,28 +1,33 @@
-import { Context } from 'probot' // eslint-disable-line no-unused-vars
-
+import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
+// RestEndpointMethodTypes["repos"]["getBranchProtection"]["response"]
 const organization_repository = '.github'
-
+// ['repos']['getBranchProtection']
 async function enforceProtection (
   octokit: Context['octokit'],
   repository: { owner: string, repo: string },
   context_name: string,
   enforce_admin = false
-) {
+): Promise<void> {
   const repo = await octokit.repos.get({
     ...repository,
     mediaType: {
       previews: ['symmetra']
     }
   })
-  let protection: any = null
+  
+  let protection: any;
+
   try {
     protection = await octokit.repos.getBranchProtection({
       ...repository,
       branch: repo.data.default_branch
     })
-  } catch (e) { }
+  } catch (e) {
+    console.error(e)
+  }
 
   let enforce_admins = protection && protection.data.enforce_admins.enabled
+  
   if (enforce_admins === true) {
     enforce_admin = true
   } else if (repository.repo === organization_repository) {

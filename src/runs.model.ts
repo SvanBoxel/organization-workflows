@@ -16,7 +16,7 @@ export interface IRun extends mongoose.Document {
     full_name: string;
   },
   expire_at?: Date
-};
+}
 
 export const RunSchema = new mongoose.Schema({
   sha: String,

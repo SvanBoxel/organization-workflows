@@ -18,7 +18,7 @@
     "build:watch": "tsc && (tsc -w --preserveWatchOutput & nodemon)",
     "dev": "npm run build:watch",
     "start": "probot run ./lib/index.js",
-    "lint": "standard **/*.ts --fix",
+    "lint": "eslint src/**/*.ts --fix",
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
@@ -30,7 +30,9 @@
     "@types/jest": "^25.1.0",
     "@types/nock": "^11.1.0",
     "@types/node": "^13.1.0",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^7.16.0",
     "eslint-plugin-typescript": "^0.14.0",
     "jest": "^24.9.0",
     "nock": "^12.0.0",
@@ -43,13 +45,21 @@
   "engines": {
     "node": ">= 8.3.0"
   },
-  "standard": {
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 2015,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "modules": true
+      }
+    },
     "parser": "@typescript-eslint/parser",
-    "env": [
-      "jest"
-    ],
     "plugins": [
-      "typescript"
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended"
     ]
   },
   "jest": {
