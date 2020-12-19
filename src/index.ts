@@ -1,38 +1,30 @@
 import { Probot } from "probot" 
-import { uuid } from 'uuidv4';
 import enforceProtection from './enforce-protection';
+
+import mongoose from 'mongoose';
+import Runs from "./runs-schema";
 
 const repository_dispatch_type = 'org-workflow-bot';
 const organization_repository = '.github';
 const app_route = "/org-workflows";
+const mongoUri = process.env.DB_HOST || "localhost";
 
-let runs: {[key: string]: {
-  id: string;
-  sha: string;
-  callback_url: string;
-  check?: {
-    run_id: number; // The run in the central workflow
-    name?: string; // Name of the status check
-    checks_run_id: number; // ID of status check on commit
-  }
-  repository: {
-    owner: string;
-    name: string;
-    full_name: string;
-  }
-}} = {}
+mongoose.connect(mongoUri, {
+  user: process.env.DB_USER,
+  pass: process.env.DB_PASS,
+  useFindAndModify: false
+});
 
 module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
   const router = getRouter(app_route);
-
   app.on('push', async (context) => {
     const webhook = await context.octokit.apps.getWebhookConfigForApp();
     
-    const id = uuid();
     const sha = context.payload.after;
 
-    runs[id] = {
-      id,
+    const token = await context.octokit.apps.createInstallationAccessToken({ installation_id: context?.payload?.installation?.id || 0 })
+ 
+    const data = {
       sha,
       callback_url: `${webhook.data.url}${app_route}/register`,
       repository: {
@@ -42,40 +34,42 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
       },
     };
 
+    const { _id } = await Runs.create(data);
+
     await context.octokit.repos.createDispatchEvent({
       owner: context.payload.repository.owner.login,
       repo: organization_repository,
       event_type: repository_dispatch_type,
-      client_payload: runs[id]
+      client_payload: {
+        id: _id,
+        ...data,
+        token: token.data.token
+      }
     });
   })
 
   app.on('workflow_run.completed', async (context) => {
     if (context.payload.repository.name !== organization_repository) return;
     
-    const id = Object.keys(runs).find(key => {
-      runs[key].check?.run_id === context?.payload?.workflow_run?.id
-    }) || 0;
+    const run = await Runs.findOne({ "check.run_id": context?.payload?.workflow_run?.id });
 
-    if (!id) return;
-    context.log('finishing check...', id);
+    if (!run) return;
+
+    context.log('finishing check...', run._id);
 
     const data: any = {
-      owner: runs[id].repository.owner,
-      repo: runs[id].repository.name,
-      check_run_id: runs[id].check?.checks_run_id,
-      name: `${runs[id].check?.name}`,
+      owner: run.repository.owner,
+      repo: run.repository.name,
+      check_run_id: run.check?.checks_run_id,
+      name: `${run.check?.name}`,
       status: context.payload.workflow_run?.status,
       conclusion: context.payload.workflow_run?.conclusion
     }
 
     await context.octokit.checks.update(data)
-
-    context.log(`${Object.keys(runs).length} runs in memory`);
   })
   
   router.get("/register", async (req: any, res: any) => {
-    console.log(req.query)
     let octokit = await app.auth()
     const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
     octokit = await app.auth(installation.data.id)
@@ -86,34 +80,35 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
     let require = req.query.require === 'true'
     let enforce_admin = req.query.enforce_admin === 'true'
 
-    console.log('registering check')
+    const run = await Runs.findById(id);
+    
+    if (!run) return;
+
     const checks_run = await octokit.checks.create({
-      owner: runs[id].repository.owner,
-      repo: runs[id].repository.name,
-      head_sha: runs[id].sha,
+      owner: run.repository.owner,
+      repo: run.repository.name,
+      head_sha: run.sha,
       name,
-      details_url: `https://github.com/${runs[id].repository.owner}/${organization_repository}/actions/runs/${run_id}`,
+      details_url: `https://github.com/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
       status: 'in_progress'
     })
 
     if (require) {
       enforceProtection(
         octokit, 
-        { owner: runs[id].repository.owner, repo: runs[id].repository.name},
+        { owner: run.repository.owner, repo: run.repository.name},
         name, 
         enforce_admin
       ) 
     }
 
-    runs[id] = {
-      ...runs[id],
+    await Runs.findByIdAndUpdate(id, {
       check: {
-        ...runs[id].check,
         name,
         run_id: Number(run_id),
         checks_run_id: checks_run.data.id
       }
-    }
+    })
 
     res.sendStatus(200);
   });
