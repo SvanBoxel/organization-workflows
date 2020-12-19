@@ -74,12 +74,21 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
     const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
     octokit = await app.auth(installation.data.id)
 
-    const { id, run_id, name, sha, require, enforce_admin } = req.query;
+    const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query;
     const run = await Runs.findById((req.query.id || "").toString());
     
     if (!run) return;
     if (run.sha !== sha) return; // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random) 
 
+    if (documentation) {
+      const docs = await octokit.repos.getContent({
+        owner: run.repository.owner,
+        repo: '.github',
+        path: documentation
+      })
+
+      console.log(docs)
+    }
     const checks_run = await octokit.checks.create({
       owner: run.repository.owner,
       repo: run.repository.name,

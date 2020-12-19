@@ -33,6 +33,6 @@ runs:
           -d run_id=${{ inputs.run_id }} \
           -d sha=${{ inputs.sha }} \
           --data-urlencode "name=${{ env.name || github.workflow }}" \
+          --data-urlencode "documentation=${{ inputs.documentation }}" \
           -d enforce=${{ inputs.enforce }}
-          -d documentation=${{ inputs.documentation }}
       shell: bash
