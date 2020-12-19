@@ -12,11 +12,13 @@ const mongoUri = process.env.DB_HOST || "localhost";
 mongoose.connect(mongoUri, {
   user: process.env.DB_USER,
   pass: process.env.DB_PASS,
-  useFindAndModify: false
+  useFindAndModify: false,
+  useNewUrlParser: true
 });
 
 module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
   const router = getRouter(app_route);
+
   app.on('push', async (context) => {
     const webhook = await context.octokit.apps.getWebhookConfigForApp();
     
@@ -69,6 +71,18 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
     await context.octokit.checks.update(data)
   })
   
+  app.on('check_run.rerequested', async (context) => {
+    const run = await Runs.findOne({ "check.checks_run_id": context?.payload?.check_run?.id });
+
+    if (!run) return;
+
+    return await context.octokit.actions.reRunWorkflow({
+      owner: run.repository.owner,
+      repo: organization_repository, 
+      run_id: run?.check?.run_id || 0
+    })
+  })
+  
   router.get("/register", async (req: any, res: any) => {
     let octokit = await app.auth()
     const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
@@ -77,31 +91,40 @@ module.exports = (app: Probot, { getRouter }: { getRouter: any }) => {
     const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query;
     const run = await Runs.findById((req.query.id || "").toString());
     
-    if (!run) return;
-    if (run.sha !== sha) return; // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random) 
+    if (!run) return res.sendStatus(401);
+    if (run.sha !== sha) res.sendStatus(404); // Although unlikely, make sure that people can't create checks by only submitting random IDs (mongoose IDs are not-so-random) 
 
-    if (documentation) {
-      const docs = await octokit.repos.getContent({
-        owner: run.repository.owner,
-        repo: '.github',
-        path: documentation
-      })
-
-      console.log(docs)
-    }
-    const checks_run = await octokit.checks.create({
+    const data: any = {
       owner: run.repository.owner,
       repo: run.repository.name,
       head_sha: run.sha,
       name,
       details_url: `https://github.com/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
       status: 'in_progress',
-      actions: [{
-        label: "re-run",
-        description: "re-run workflow",
-        identifier: "hello"
-      }]
-    })
+    }
+
+    let content; 
+
+    if (documentation) {
+      try {
+        const docs = await octokit.repos.getContent({
+          owner: run.repository.owner,
+          repo: organization_repository,
+          path: documentation
+        })
+        
+        // @ts-ignore 
+        content = Buffer.from(docs.data.content, docs.data.encoding).toString()
+        data.output = {
+          title: name,
+          summary: content,
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const checks_run = await octokit.checks.create(data)
 
     if (require === 'true') {
       enforceProtection(

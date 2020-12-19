@@ -31,13 +31,9 @@ export const RunSchema = new mongoose.Schema({
     name: String,
     full_name: String
   },
-  expire_at: {
-    type: Date, 
-    default: Date.now, 
-    expires: runExpiry
-  } 
 });
 
+RunSchema.index({ createdAt: 1 }, { expireAfterSeconds: runExpiry });
 const Run = mongoose.model<IRun>('Run', RunSchema);
 
 export default Run;
