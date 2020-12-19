@@ -20,6 +20,9 @@ inputs:
     description: 'enforce'
     required: false
     default: false
+  documentation: 
+    description: 'documentation'
+    required: false
 runs:
   using: "composite"
   steps: 
@@ -31,4 +34,5 @@ runs:
           -d sha=${{ inputs.sha }} \
           --data-urlencode "name=${{ env.name || github.workflow }}" \
           -d enforce=${{ inputs.enforce }}
+          -d documentation=${{ inputs.documentation }}
       shell: bash
