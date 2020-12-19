@@ -19,7 +19,7 @@ jobs:
     - run: npm run build --if-present
   deploy: 
     runs-on: ubuntu-latest
-    steps
+    steps:
     - uses: actions/checkout@v2
     - name: Deploy to Heroku
       uses: AkhileshNS/heroku-deploy@v3.6.8
