@@ -19,5 +19,9 @@ export default async (app: Probot, { getRouter }: { getRouter: any }) => {
   app.on('check_run.rerequested', handleReRun);
 
   router.get('/register', (req: Request, res: Response) => handleRegister(req, res, { app }))
-  router.get('/health', (_: Request, res: Response) => res.json(dbStatus()))
+  router.get('/health', (_: Request, res: Response) => {
+    const { connection, dbState } = dbStatus();
+    const status = connection === 'up' && dbState === 'connected' ? 200 : 503
+    res.status(status).json(dbStatus())
+  })
 }
