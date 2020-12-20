@@ -1,7 +1,6 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import Run from '../models/runs.model'
 import { organization_repository, app_route } from "../constants";
-import { POINT_CONVERSION_COMPRESSED } from 'constants';
 
 export const repository_dispatch_type = 'org-workflow-bot'
 
