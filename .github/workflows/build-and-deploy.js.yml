@@ -19,6 +19,7 @@ jobs:
     - run: npm run build --if-present
   
   deploy: 
+    needs: [build]
     runs-on: ubuntu-latest
     environment: production
     steps:
