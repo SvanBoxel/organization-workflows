@@ -3,7 +3,9 @@ import Runs from '../models/runs.model'
 import { organization_repository } from "../constants";
 
 async function handleReRun(context: Context): Promise<void> {
-  const run = await Runs.findOne({ 'check.checks_run_id': context?.payload?.check_run?.id })
+  if (!context?.payload?.check_run?.id) return
+
+  const run = await Runs.findOne({ 'check.checks_run_id': context.payload.check_run.id })
   if (!run) return
 
   await context.octokit.actions.reRunWorkflow({
@@ -13,4 +15,4 @@ async function handleReRun(context: Context): Promise<void> {
   })
 }
 
-export default handleReRun;
+export default handleReRun; 

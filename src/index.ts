@@ -9,7 +9,7 @@ import handleReRun from './handlers/re-run'
 import handleRegister from './handlers/register'
 import { app_route } from "./constants";
 
-module.exports = async (app: Probot, { getRouter }: { getRouter: any }) => {
+export default async (app: Probot, { getRouter }: { getRouter: any }) => {
   const { dbStatus } = await dbConnect();
 
   const router = getRouter(app_route)

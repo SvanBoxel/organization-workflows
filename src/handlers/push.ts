@@ -1,12 +1,13 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
-import Runs from '../models/runs.model'
+import Run from '../models/runs.model'
 import { organization_repository, app_route } from "../constants";
+import { POINT_CONVERSION_COMPRESSED } from 'constants';
 
 export const repository_dispatch_type = 'org-workflow-bot'
 
-async function handlePush(context: Context['octokit']['web']): Promise<void> {
-  const webhook = await context.octokit.apps.getWebhookConfigForApp()
+async function handlePush(context: Context): Promise<void> {
   const sha = context.payload.after
+  const webhook = await context.octokit.apps.getWebhookConfigForApp()
   const token = await context.octokit.apps.createInstallationAccessToken({ installation_id: context?.payload?.installation?.id || 0 })
 
   const data = {
@@ -19,14 +20,16 @@ async function handlePush(context: Context['octokit']['web']): Promise<void> {
     }
   }
 
-  const { _id } = await Runs.create(data)
+  const run = new Run(data);
+  const { _id } = await run.save()
+
 
   await context.octokit.repos.createDispatchEvent({
     owner: context.payload.repository.owner.login,
     repo: organization_repository,
     event_type: repository_dispatch_type,
     client_payload: {
-      id: _id,
+      id: _id.toString(),
       ...data,
       token: token.data.token
     }
