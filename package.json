@@ -19,7 +19,7 @@
     "dev": "npm run build:watch",
     "start": "probot run ./lib/index.js",
     "lint": "eslint src/**/*.ts --fix",
-    "test": "jest && standard **/*.ts",
+    "test": "jest && npm run lint",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
