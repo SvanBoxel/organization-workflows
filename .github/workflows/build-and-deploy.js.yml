@@ -22,7 +22,7 @@ jobs:
         npm test
   
   deploy: 
-    needs: [build]
+    needs: [build-and-test]
     runs-on: ubuntu-latest
     environment: 
       name: production
