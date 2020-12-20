@@ -7,7 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
+    name: build and test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -15,8 +16,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm ci
-    - run: npm run build --if-present
+    - run: | 
+        npm ci
+        npm run build --if-present
+        npm test
   
   deploy: 
     needs: [build]
