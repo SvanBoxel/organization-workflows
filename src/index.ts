@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import dbConnect from './db-connect';
 
 import handlePush from './handlers/push'
-import handleCompletedRun from './handlers/push'
+import handleCompletedRun from './handlers/completed-run'
 import handleReRun from './handlers/re-run'
 import handleRegister from './handlers/register'
 import { app_route } from "./constants";
