@@ -12,6 +12,25 @@ If you don't want to install it on all repositories, then make sure to at least 
 
 After you've installed the app, you can create a centrally managed workflow. There are a couple of things to keep in mind when you do this: 
 
+### Registering the run
+To let this app keep track of Action runs and expose this information back to a commit it needs to register the workflow run. Use the following Action snippet for this: 
+
+```yml
+    - name: Run the private action
+      uses: SvanBoxel/organization-workflow@master
+      with:
+        id: ${{ github.event.client_payload.id }}
+        callback_url: ${{ github.event.client_payload.callback_url }}
+        sha: ${{ github.event.client_payload.sha }}
+        run_id: ${{ github.run_id }}
+        name: ${{ github.workflow }} // This name is shown with the check, but can be changed.
+``` 
+Make sure to not change the `id`, `callback_url`, `sha`, and `run_id`. This `name` argument shown with the check can be changed. (default is the name of the workflow)
+
+If you don't register the run, only the workflow is triggered without providing information back to the user that pushed the commit.
+
+[More information about the available input for the action](#action-inputs). 
+
 ### Checking out code
 Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow#about-the-github_token-secret) is scoped to the repository it is running in, you need to leverage the GitHub App to get access to the repository that triggered the workflow. You can use the repository, ref, and token that is supplied in the dispatch payload by the app for this:
 
@@ -46,10 +65,6 @@ on:
     types: [org-workflow-bot]  
 ```
 
-### Experimental mode
-When the workflow run starts, it sends the information back to the app which then sets a [status check](https://docs.github.com/en/free-pro-team@latest/rest/guides/getting-started-with-the-checks-api) with the `in_progress` status and a link to the workflow run on the original commit. 
-
-When the workflow run finishes, the app receives and forwards the status of the workflow on the original commit. 
 
 ## How it works
 ## Setup
