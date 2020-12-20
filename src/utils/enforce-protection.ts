@@ -1,7 +1,6 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
-// RestEndpointMethodTypes["repos"]["getBranchProtection"]["response"]
 const organization_repository = '.github'
-// ['repos']['getBranchProtection']
+
 async function enforceProtection (
   octokit: Context['octokit'],
   repository: { owner: string, repo: string },

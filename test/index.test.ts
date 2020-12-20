@@ -3,7 +3,8 @@
 
 import nock from 'nock'
 // Requiring our app implementation
-import myProbotApp from '../src'
+const myProbotApp = require("../src");
+console.log(myProbotApp)
 import { Probot } from 'probot'
 // Requiring our fixtures
 import payload from './fixtures/issues.opened.json'
@@ -25,7 +26,7 @@ describe('My Probot app', () => {
 
   beforeEach(() => {
     nock.disableNetConnect()
-    probot = new Probot({ id: 123, cert: mockCert })
+    probot = new Probot({ appId: 123, privateKey: mockCert })
     // Load our app into probot
     probot.load(myProbotApp)
   })
