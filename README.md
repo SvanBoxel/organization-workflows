@@ -74,14 +74,14 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
 > ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See [App permissions](#app-permission))
 
 ### 🚀 Ready to go
-You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this app [here](https://github.com/saturnus-inc/.github), and the video below explains from start to end how to set this up yourself. 
+You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this app [here](https://github.com/saturn-inc), and the video below explains from start to end how to set this up yourself. 
 
 // todo
 
 ### App permissions
 This app needs the following permissions:
 
-- **Repository admimistration**: To set or enforce protected branch settings.
+- **Repository admimistration**: To set or enforce p rotected branch settings.
 - **Checks**: To interact with the checks API.
 - **Contents**: To checkout the code in a workflow run.
 - **Metadata**: To retrieve repository metadata information.
@@ -138,9 +138,9 @@ Now you can run the app with the following command:
 npm run build:watch
 ```
 
-This will prompt you to visit http://localhost:3000 and configure the app on the GitHub side. After you do this it will automatically populate the `APP_ID` and `WEBHOOK_SECRET` and `PRIVATE_KEY` field in the `.env` file.
+This will prompt you to visit http://localhost:3000 and configure the app on the GitHub side. After you do this it will automatically populate the `APP_ID`, `WEBHOOK_SECRET` and `PRIVATE_KEY` field in the `.env` file.
 
-### Compile, test, and run
+### Build, test, and run
 ```
 npm run build
 npm test
