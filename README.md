@@ -73,7 +73,7 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
 
 > ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See [App permissions](#app-permission))
 
-### 🚀
+### 🚀 Ready to go
 You're ready to go! A full example of a centralized workflow can be found here, an example organization that uses this here, and the video below explains from start to end how to set this up yourself. 
 
 // todo
@@ -98,19 +98,36 @@ on:
 ```
 
 ## Development
-## Codespaces
-// todo
-## Setup
+### Codespaces
+A [Codespaces environment](https://github.com/features/codespaces) is defined so you can get started right away. Open this repository in the codespace and run `npm run dev` to start the app in development mode. It will prompt you to follow a couple of instruction to configure your GitHub app and set your .env values. 
+
+<img width="679" alt="Screenshot 2020-12-22 at 13 29 01" src="https://user-images.githubusercontent.com/24505883/102888754-ae2e9a80-4459-11eb-92cf-5789f945e4d8.png">
+
+This codespaces comes and configured installed with:
+- A local MongoDB enviroment
+- Localtunnel for webhook and request forwarding
+- NodeJS
+
+### Setup locally
+This app depends on NodeJS to run the application and MongoDB for data persistence. Follow the following steps to run this app locally:
 
 ```sh
 # Install dependencies
 npm install
+```
 
-# Run with hot reload
+Then, copy `.env.example` to `.env` and populate it with your MongoDB host and credentials and your proxy url. Make sure to run a tool like [ngrok](https://ngrok.com/) or [localtunnel](https://github.com/localtunnel/localtunnel) to expose your application to the internet. Smee.io is not supported, as it is a webhook proxy service and cannot forward Express endpoint calls
+
+Now you can run the app with the following command:
+```sh
 npm run build:watch
+```
 
-# Compile and run
+This will prompt you to visit http://localhost:3000 and configure the app on the GitHub side. After you do this it will automatically populate the `APP_ID` and `WEBHOOK_SECRET` and `PRIVATE_KEY` field in the `.env` file.
+
+### Compile, test, and run
 npm run build
+npm test
 npm run start
 ```
 
