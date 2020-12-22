@@ -11,10 +11,10 @@ If you don't want to install it on all repositories, then make sure to at least 
 
 <img width="400" alt="Screenshot 2020-12-18 at 17 14 27" src="https://user-images.githubusercontent.com/24505883/102636098-81763c80-4154-11eb-80f5-50e21b33020f.png">
 
-After you've installed the app, you can create a centrally managed workflow. There are a couple of things to keep in mind when you do this: 
+After you install the app, you can create a centrally managed workflow. There are a couple of things to keep in mind when you do this: 
 
 ### Listening to the right event
-This app dispatches workflow runs with the `repository_dispatch` event and the `org-workflow-bot` type. Create a new workflow in the `.github` repository with the yml definition below:
+This app dispatches workflow runs with the `repository_dispatch` event and the `org-workflow-bot` type. Create a new workflow in the `.github/workflows` directory of your organization's `.github` repository with the yml definition below:
 
 ```yml
 name: compliance-check 
@@ -54,7 +54,7 @@ Make sure to not change the `id`, `callback_url`, `sha`, and `run_id`. The `name
 
 _(☝ source repository)_
 
-[More information about the available input for the action](#action-inputs). 
+You have the possibilty to show the user specific documentation or enforce specific checks, see [available input](#action-inputs) for more information about this. 
 
 > 👀 Optional: If you don't register the run, the workflow is triggered without providing information to the user that pushed the commit like in the image above. You can still manually provide this information using one of the [Check Actions](https://github.com/marketplace?type=actions&query=checks) that is available in the GitHub Marketplace. 
 
@@ -89,14 +89,18 @@ This app needs the following permissions:
 ## How it works
 When installed in an organization, the app's logic is triggered by any `push` event. When this happens, the app collects all relevant information and [dispatches](https://docs.github.com/en/free-pro-team@latest/actions/reference/events-that-trigger-workflows#repository_dispatch) this to the `.github` repository of your organization. Here, all central workflow files configured with the `repository_dispatch` event and `org-workflow-bot` type are triggered.
 
-```yml
-name: compliance-check
+To map commits, checks, and workflow run, and to make sure workflows can rerun without any problem, some data persistence is needed. Because of this you need to register the run at the start of a workflow. When the workflow finishes the app retrieves what source repository and commit triggered the central workflow, and exposes the workflow results back to the original commit. This data (source repository, check id, sha, and run id) is automatically removed after 90 days. 
 
-on:
-  repository_dispatch:
-    types: [org-workflow-bot]  
-```
+## Action inputs
 
+**id (required)**: ID of run (provided by GitHub app via `github.event.client_payload.id`) 
+**run_id (required)**: ID of workflow run (provided via GitHub syntax `github.run_id`) 
+**name (required)**: Name of check (Use `github.workflow` to use the name of the workflow) 
+**callback_url (required)**: Callback url for register call (provided by GitHub app via `github.event.client_payload.callback_url`)
+**sha**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`) 
+**enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks)
+**documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)
+    
 ## Development
 ### Codespaces
 A [Codespaces environment](https://github.com/features/codespaces) is defined so you can get started right away. Open this repository in the codespace and run `npm run dev` to start the app in development mode. It will prompt you to follow a couple of instruction to configure your GitHub app and set your .env values. 
@@ -104,7 +108,7 @@ A [Codespaces environment](https://github.com/features/codespaces) is defined so
 <img width="679" alt="Screenshot 2020-12-22 at 13 29 01" src="https://user-images.githubusercontent.com/24505883/102888754-ae2e9a80-4459-11eb-92cf-5789f945e4d8.png">
 
 This codespaces comes and configured installed with:
-- A local MongoDB enviroment
+- A local MongoDB environment
 - Localtunnel for webhook and request forwarding
 - NodeJS
 
