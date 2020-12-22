@@ -54,7 +54,7 @@ Make sure to not change the `id`, `callback_url`, `sha`, and `run_id`. The `name
 
 _(☝ source repository)_
 
-You have the possibilty to show the user specific documentation or enforce specific checks, see [available input](#action-inputs) for more information about this. 
+You have the possibilty to show the user specific documentation or enforce specific checks, see [Action inputs](#action-inputs) for more information about this. 
 
 > 👀 Optional: If you don't register the run, the workflow is triggered without providing information to the user that pushed the commit like in the image above. You can still manually provide this information using one of the [Check Actions](https://github.com/marketplace?type=actions&query=checks) that is available in the GitHub Marketplace. 
 
@@ -93,14 +93,25 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
 
 ## Action inputs
 
-**id (required)**: ID of run (provided by GitHub app via `github.event.client_payload.id`) 
-**run_id (required)**: ID of workflow run (provided via GitHub syntax `github.run_id`) 
-**name (required)**: Name of check (Use `github.workflow` to use the name of the workflow) 
-**callback_url (required)**: Callback url for register call (provided by GitHub app via `github.event.client_payload.callback_url`)
-**sha**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`) 
-**enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks)
-**documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)
+- **id (required)**: ID of run (provided by GitHub app via `github.event.client_payload.id`)  
+- **run_id (required)**: ID of workflow run (provided via GitHub syntax `github.run_id`)  
+- **name (required)**: Name of check (Use `github.workflow` to use the name of the workflow)  
+- **callback_url (required)**: Callback url for register call (provided by GitHub app via `github.event.client_payload.callback_url`)  
+- **sha**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`)  
+- **enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks)  
+- **documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)  
     
+```yml
+    - uses: SvanBoxel/organization-workflow@master
+      with:
+        id: ${{ github.event.client_payload.id }}
+        callback_url: ${{ github.event.client_payload.callback_url }}
+        sha: ${{ github.event.client_payload.sha }}
+        run_id: ${{ github.run_id }}
+        name: ${{ env.name || github.workflow }}
+        enforce: true
+        documentation: "README.md"
+```
 ## Development
 ### Codespaces
 A [Codespaces environment](https://github.com/features/codespaces) is defined so you can get started right away. Open this repository in the codespace and run `npm run dev` to start the app in development mode. It will prompt you to follow a couple of instruction to configure your GitHub app and set your .env values. 
