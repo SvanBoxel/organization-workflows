@@ -141,6 +141,7 @@ npm run build:watch
 This will prompt you to visit http://localhost:3000 and configure the app on the GitHub side. After you do this it will automatically populate the `APP_ID` and `WEBHOOK_SECRET` and `PRIVATE_KEY` field in the `.env` file.
 
 ### Compile, test, and run
+```
 npm run build
 npm test
 npm run start
