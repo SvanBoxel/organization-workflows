@@ -1,7 +1,7 @@
 import { Probot } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Request, Response } from "express";
 
-import Runs from '../models/runs.model'
+import Runs, { ICheck } from '../models/runs.model'
 import enforceProtection from '../utils/enforce-protection'
 import { organization_repository, github_host } from "../constants";
 
@@ -11,8 +11,8 @@ async function handleRegister(
   { app }: { app: Probot}
 ): Promise<any> {
   const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query
-  const run = await Runs.findById((req.query.id || '').toString())
-
+  const run = await Runs.findById(id);
+  
   if (!run) return res.sendStatus(404)
   if (run.sha !== sha) return res.sendStatus(404) // Although unlikely, make sure that people can't create checks by submitting random IDs (mongoose IDs are not-so-random)
 
@@ -54,14 +54,17 @@ async function handleRegister(
       enforce_admin === 'true'
     )
   }
+  
+  const checkInfo: ICheck = {
+    name: data.name,
+    run_id: Number(run_id),
+    checks_run_id: checks_run.data.id
+  };
 
-  await Runs.findByIdAndUpdate(id, {
-    check: {
-      name: data.name,
-      run_id: Number(run_id),
-      checks_run_id: checks_run.data.id
-    }
-  })
+  await Runs.findByIdAndUpdate(
+    id, 
+    { $push: { checks: checkInfo } }
+  )
 
   return res.sendStatus(200)
 }

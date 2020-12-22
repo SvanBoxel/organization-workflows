@@ -22,6 +22,8 @@ describe('completed run handler', () => {
           }
         },
         workflow_run: {
+          id: 2910,
+          run_id: 2910,
           status: "completed",
           conclusion: "failure"
         },
@@ -41,10 +43,11 @@ describe('completed run handler', () => {
         owner: 'santa',
         name: 'harold'
       },
-      check: {
+      checks: [{
         name: "org-workflow/santa-linter",
-        checks_run_id: 2910,
-      }
+        run_id: 2910,
+        checks_run_id: 29104,
+      }]
     }
 
     mockingoose(runsModel).toReturn(_doc, 'findOne');
@@ -66,9 +69,9 @@ describe('completed run handler', () => {
     })
     test('should call octokit checks update method', () => {
       expect(context.octokit.checks.update).toBeCalledWith({
-        check_run_id: _doc.check.checks_run_id,
+        check_run_id: _doc.checks[0].checks_run_id,
         conclusion: context.payload.workflow_run.conclusion,
-        name: _doc.check.name,
+        name: _doc.checks[0].name,
         owner: _doc.repository.owner,
         repo: _doc.repository.name,
         status: context.payload.workflow_run.status,

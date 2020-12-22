@@ -19,10 +19,12 @@ async function handlePush(context: Context): Promise<void> {
     }
   }
 
-  console.log('saving run...', data);
-  const run = new Run(data);
+  const run = new Run({
+    ...data,
+    checks: []
+  });
+  
   const { _id } = await run.save()
-  console.log('saved run...', _id);
 
   await context.octokit.repos.createDispatchEvent({
     owner: context.payload.repository.owner.login,

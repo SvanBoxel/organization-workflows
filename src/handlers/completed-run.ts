@@ -4,14 +4,18 @@ import { organization_repository } from "../constants";
  
 async function handleCompletedRun(context: Context): Promise<void> {
   if (context.payload.repository.name !== organization_repository) return
+  if (!context.payload.workflow_run.id) return;
+  const run = await Runs.findOne({ 'checks.run_id': { $in: context.payload.workflow_run.id }})
 
-  const run = await Runs.findOne({ 'check.run_id': context?.payload?.workflow_run?.id })
   if (!run) return
+  const check = run.checks.find((check) => check.run_id === context.payload.workflow_run.id )
+  if (!check) return;
+
   const data: any = {
     owner: run.repository.owner,
     repo: run.repository.name,
-    check_run_id: run.check?.checks_run_id,
-    name: `${run.check?.name}`,
+    check_run_id: check.checks_run_id,
+    name: `${check.name}`,
     status: context.payload.workflow_run?.status,
     conclusion: context.payload.workflow_run?.conclusion
   }
