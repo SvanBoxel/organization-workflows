@@ -1,9 +1,9 @@
 {
-  "name": "central-workflows-bot",
+  "name": "organization-workflows-github-app",
   "version": "1.0.0",
   "private": true,
-  "description": "A Probot app",
-  "author": "Sebass van Boxel <svboxel@gmail.com>",
+  "description": "Need to centrally manage and run Actions workflows across multiple repositories? This app does it for you.",
+  "author": "Sebass van Boxel <hello@svboxel.com>",
   "license": "ISC",
   "repository": "https://github.com/SvanBoxel/central-workflows-bot.git",
   "homepage": "https://github.com/SvanBoxel/central-workflows-bot",
