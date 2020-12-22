@@ -38,7 +38,7 @@ jobs:
   register-and-lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: SvanBoxel/organization-workflow@master
+    - uses: SvanBoxel/organization-workflow@main
       with:
         id: ${{ github.event.client_payload.id }}
         callback_url: ${{ github.event.client_payload.callback_url }}
@@ -74,7 +74,7 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
 > ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See [App permissions](#app-permission))
 
 ### 🚀 Ready to go
-You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this here, and the video below explains from start to end how to set this up yourself. 
+You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this app [here](https://github.com/saturnus-inc/.github), and the video below explains from start to end how to set this up yourself. 
 
 // todo
 
@@ -102,7 +102,7 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
 - **documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)  
     
 ```yml
-    - uses: SvanBoxel/organization-workflow@master
+    - uses: SvanBoxel/organization-workflow@main
       with:
         id: ${{ github.event.client_payload.id }}
         callback_url: ${{ github.event.client_payload.callback_url }}

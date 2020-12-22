@@ -8,11 +8,7 @@ jobs:
   register:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2.3.4
-      with:
-        repository: svanboxel/organization-workflow
-        token: ${{ secrets.GH_PAT }} 
-    - uses: SvanBoxel/organization-workflow
+    - uses: SvanBoxel/organization-workflow@main
       with:
         id: ${{ github.event.client_payload.id }}
         callback_url: ${{ github.event.client_payload.callback_url }}
