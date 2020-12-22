@@ -40,7 +40,7 @@ async function handleRegister(
       const summary = Buffer.from((docs.data as any).content, (docs.data as any).encoding).toString()
       data.output = { title: name, summary }
     } catch (e) {
-      console.error(e)
+      // console.error(e)
     }
   }
 
