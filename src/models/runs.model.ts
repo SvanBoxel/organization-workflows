@@ -33,7 +33,14 @@ export const RunSchema = new mongoose.Schema({
   }
 })
 
-RunSchema.index({ createdAt: 1 }, { expireAfterSeconds: runExpiry })
+RunSchema.index(
+  { 
+    createdAt: 1,
+    unique: true,
+    sparse: true,
+  }, { 
+    expireAfterSeconds: runExpiry 
+  })
 const Run = mongoose.model<IRun>('Run', RunSchema)
 
 export default Run
