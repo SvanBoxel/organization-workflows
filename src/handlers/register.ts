@@ -11,6 +11,7 @@ async function handleRegister(
   { app }: { app: Probot}
 ): Promise<any> {
   let octokit = await app.auth()
+  console.log(req);
   const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
   octokit = await app.auth(installation.data.id)
 
