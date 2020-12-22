@@ -4,6 +4,7 @@ This GitHub app allows you to centrally manage and run multiple [GitHub Actions]
 
 ## Installation
 You can install the app by [clicking here](https://github.com/apps/organization-workflows-production). Make sure you install it on all repositories:
+
 <img width="400" alt="Screenshot 2020-12-18 at 17 12 00" src="https://user-images.githubusercontent.com/24505883/102635920-4247eb80-4154-11eb-9ec2-0cb8bc58196c.png">
 
 If you don't want to install it on all repositories, then make sure to at least include the `.github` repository of your organization. 
