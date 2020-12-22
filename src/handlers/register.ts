@@ -10,11 +10,6 @@ async function handleRegister(
   res: Response, 
   { app }: { app: Probot}
 ): Promise<any> {
-  let octokit = await app.auth()
-  console.log(req);
-  const installation = await octokit.apps.getOrgInstallation({ org: 'moon-organization' })
-  octokit = await app.auth(installation.data.id)
-
   const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query
   const run = await Runs.findById((req.query.id || '').toString())
 
@@ -29,6 +24,10 @@ async function handleRegister(
     details_url: `${github_host}/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
     status: 'in_progress'
   }
+
+  let octokit = await app.auth()
+  const installation = await octokit.apps.getOrgInstallation({ org: run.repository.owner })
+  octokit = await app.auth(installation.data.id)
 
   if (documentation) {
     try {
