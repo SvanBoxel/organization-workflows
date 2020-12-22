@@ -74,7 +74,7 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
 > ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See [App permissions](#app-permission))
 
 ### 🚀 Ready to go
-You're ready to go! A full example of a centralized workflow can be found here, an example organization that uses this here, and the video below explains from start to end how to set this up yourself. 
+You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this here, and the video below explains from start to end how to set this up yourself. 
 
 // todo
 
@@ -108,7 +108,7 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
         callback_url: ${{ github.event.client_payload.callback_url }}
         sha: ${{ github.event.client_payload.sha }}
         run_id: ${{ github.run_id }}
-        name: ${{ env.name || github.workflow }}
+        name: ${{ github.workflow }}
         enforce: true
         documentation: "README.md"
 ```

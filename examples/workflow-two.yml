@@ -1,0 +1,29 @@
+name: Check for passwords
+
+on:
+  repository_dispatch:
+    types: [org-workflow-bot]  
+   
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2.3.4
+      with:
+        repository: svanboxel/organization-workflow
+        token: ${{ secrets.GH_PAT }} 
+    - uses: SvanBoxel/organization-workflow
+      with:
+        id: ${{ github.event.client_payload.id }}
+        callback_url: ${{ github.event.client_payload.callback_url }}
+        sha: ${{ github.event.client_payload.sha }}
+        run_id: ${{ github.run_id }}
+        name: ${{ github.workflow }}
+    - name: Checkout
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: ${{ github.event.client_payload.repository.full_name }}
+        ref: ${{ github.event.client_payload.sha }}
+        token: ${{ github.event.client_payload.token }}
+    - name: Check password
+      uses: AlicanAkkus/pinder-action@0.1
