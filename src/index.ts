@@ -11,6 +11,7 @@ import { app_route } from "./constants";
 
 export default async (app: Probot, { getRouter }: { getRouter: any }) => {
   const { dbStatus } = await dbConnect();
+  app.log.info('app started')
 
   const router = getRouter(app_route)
 
