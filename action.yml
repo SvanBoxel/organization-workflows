@@ -37,7 +37,7 @@ runs:
           -d run_id=${{ inputs.run_id }} \
           -d sha=${{ inputs.sha }} \
           -d enforce=${{ inputs.enforce }} \
-          -d enforce=${{ inputs.enforce_admin }} \
+          -d enforce_admin=${{ inputs.enforce_admin }} \
           --data-urlencode "name=${{ env.name || github.workflow }}" \
           --data-urlencode "documentation=${{ inputs.documentation }}"
       shell: bash
