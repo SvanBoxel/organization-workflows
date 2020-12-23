@@ -79,7 +79,7 @@ You're ready to go! Two examples of centralized workflow can be found [here](./e
 ### App permissions
 This app needs the following permissions:
 
-- **Repository admimistration**: To set or enforce p rotected branch settings.
+- **Repository admimistration**: To set or enforce protected branch settings.
 - **Checks**: To interact with the checks API.
 - **Contents**: To checkout the code in a workflow run.
 - **Metadata**: To retrieve repository metadata information.
