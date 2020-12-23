@@ -10,7 +10,7 @@ async function handleRegister(
   res: Response, 
   { app }: { app: Probot}
 ): Promise<any> {
-  const { id, run_id, name, sha, require, enforce_admin, documentation } = req.query
+  const { id, run_id, name, sha, enforce, enforce_admin, documentation } = req.query
   const run = await Runs.findById(id);
   
   if (!run) return res.sendStatus(404)
@@ -46,7 +46,7 @@ async function handleRegister(
 
   const checks_run = await octokit.checks.create(data)
 
-  if (require === 'true') {
+  if (enforce === 'true') {
     enforceProtection(
       octokit,
       { owner: run.repository.owner, repo: run.repository.name },
