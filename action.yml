@@ -20,6 +20,10 @@ inputs:
     description: 'Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks)'
     required: false
     default: false
+  enforce_admin: 
+    description: 'Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks) for admins'
+    required: false
+    default: false
   documentation: 
     description: 'Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)'
     required: false
@@ -33,6 +37,7 @@ runs:
           -d run_id=${{ inputs.run_id }} \
           -d sha=${{ inputs.sha }} \
           -d enforce=${{ inputs.enforce }} \
+          -d enforce=${{ inputs.enforce_admin }} \
           --data-urlencode "name=${{ env.name || github.workflow }}" \
           --data-urlencode "documentation=${{ inputs.documentation }}"
       shell: bash

@@ -97,9 +97,10 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
 - **run_id (required)**: ID of workflow run (provided via GitHub syntax `github.run_id`)  
 - **name (required)**: Name of check (Use `github.workflow` to use the name of the workflow)  
 - **callback_url (required)**: Callback url for register call (provided by GitHub app via `github.event.client_payload.callback_url`)  
-- **sha**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`)  
-- **enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks)  
-- **documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`)  
+- **sha (required)**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`)  
+- **enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks). _Default: false_ 
+- **enforce_admin** Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks) for admins. _Default: false_
+- **documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`) _Default: null_
     
 ```yml
     - uses: SvanBoxel/organization-workflow@main
@@ -110,6 +111,7 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
         run_id: ${{ github.run_id }}
         name: ${{ github.workflow }}
         enforce: true
+        enforce_admin: true
         documentation: "README.md"
 ```
 ## Development
