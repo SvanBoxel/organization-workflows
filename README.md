@@ -74,9 +74,7 @@ Because the [GITHUB_SECRET](https://docs.github.com/en/free-pro-team@latest/acti
 > ❗ The token in the dispatch payload is redacted in the workflow logs and cannot be used by users that only have read access to the `.github` repository. Any user who has _push access to the main branch of the `.github` repository_ can however use this token in a workflow and execute commands that are within the scope of this application. (See [App permissions](#app-permission))
 
 ### 🚀 Ready to go
-You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this app [here](https://github.com/saturn-inc), and the video below explains from start to end how to set this up yourself. 
-
-// todo
+You're ready to go! Two examples of centralized workflow can be found [here](./examples), an example organization that uses this app [here](https://github.com/saturn-inc), and [this video](https://drive.google.com/file/d/1Ums09BTHwS2h2TrH9dLsw5z98wFvJxDa/view?usp=sharing) explains from start to end how to set it up yourself. 
 
 ### App permissions
 This app needs the following permissions:
