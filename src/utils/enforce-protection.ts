@@ -41,7 +41,7 @@ async function enforceProtection (
       strict: protection ? protection.data.required_status_checks.strict : false,
       contexts: [...(protection ? protection.data.required_status_checks.contexts : []), context_name]
     },
-    enforce_admins,
+    enforce_admins: enforce_admins || null,
     required_pull_request_reviews: protection?.data?.required_pull_request_reviews ? {
       dismiss_stale_reviews: protection ? protection.data.required_pull_request_reviews.dismiss_stale_reviews : false,
       require_code_owner_reviews: protection ? protection.data.required_pull_request_reviews.require_code_owner_reviews : 0
