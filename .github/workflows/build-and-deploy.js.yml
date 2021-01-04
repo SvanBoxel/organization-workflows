@@ -34,6 +34,7 @@ jobs:
     - name: Build  Docker Image
       uses: docker/build-push-action@v2
       with:
+        context: .
         load: true
         tags: |
           ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
