@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Production deploy
 
 on:
   push:
@@ -6,34 +6,57 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  CONTAINER_NAME: organization-workflows
+  REPO: svanboxel/organization-workflows
+  REGISTRY: ghcr.io/
+  APP_NAME: organization-workflows-bot
+
 jobs:
-  build-and-test:
-    name: build and test
+  build-and-publish:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
         node-version: 12.x
     - run: | 
         npm ci
         npm run build --if-present
         npm test
-  
-  deploy: 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Build  Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        load: true
+        tags: |
+          ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
+          ${{ env.REGISTRY }}${{ env.REPO }}:latest
+    - run: |
+        docker push ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
+
+  deploy:
+    needs: [build-and-publish]
     if: github.ref == 'refs/heads/main'
-    needs: [build-and-test]
-    runs-on: ubuntu-latest
     environment: 
       name: production
-      url: https://tranquil-eyrie-48266.herokuapp.com/
+      url: https://organization-workflows-bot.azurewebsites.net
+    runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v2
-    - name: Deploy to Heroku
-      uses: AkhileshNS/heroku-deploy@v3.6.8
+    - uses: actions/checkout@master
+    - name: 'Deploy to Azure Web App'
+      uses: azure/webapps-deploy@v2
       with:
-        heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-        heroku_email: ${{ secrets.HEROKU_EMAIL }}
-        heroku_app_name: tranquil-eyrie-48266
-        healthcheck: https://tranquil-eyrie-48266.herokuapp.com/org-workflows/health
+        app-name: ${{ env.APP_NAME }}
+        slot-name: production
+        images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_78bd60d0ca1e43dca5d19f76e28007bb }}
+
+ 
