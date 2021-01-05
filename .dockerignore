@@ -5,3 +5,4 @@ coverage
 .github
 .devcontainer
 npm-debug.log
+infra
