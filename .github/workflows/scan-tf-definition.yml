@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
     
- jobs:
+jobs:
   tfsec:
     name: tfsec
     runs-on: ubuntu-latest
