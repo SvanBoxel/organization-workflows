@@ -147,6 +147,9 @@ npm test
 npm run start
 ```
 
+### Infrastructure
+You can find a Terraform definition in the `./infra` directory for deployments to Azure.
+
 ## Contributing
 
 If you have suggestions for how this GitHub app could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
