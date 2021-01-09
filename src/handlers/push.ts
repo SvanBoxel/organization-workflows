@@ -7,7 +7,10 @@ export const repository_dispatch_type = 'org-workflow-bot'
 async function handlePush(context: Context): Promise<void> {
   const sha = context.payload.after
   const webhook = await context.octokit.apps.getWebhookConfigForApp()
-  const token = await context.octokit.apps.createInstallationAccessToken({ installation_id: context?.payload?.installation?.id || 0 })
+  const token = await context.octokit.apps.createInstallationAccessToken({ 
+    installation_id: context?.payload?.installation?.id || 0,
+    repository_ids: [context.payload.repository.id] 
+  })
 
   const data = {
     sha,
