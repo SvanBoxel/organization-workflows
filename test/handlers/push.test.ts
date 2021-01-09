@@ -22,6 +22,7 @@ describe('push handler', () => {
         before: "bc5b6d4f4a5b2eb3d89f52d46d75f2129c63b074",
         after: "89c9e6dc89fce3971570dba9b07052973bff7e13",
         repository: {
+          id: 33241,
           name: 'rudolph',
           full_name: 'santa/rudolph',
           owner: {
@@ -47,6 +48,14 @@ describe('push handler', () => {
     } as any
 
     mockingoose(runsModel).toReturn({ _id: id }, 'save');
+  })
+
+  test('should createInstallationAccessToken that is scoped to push repository', async () => {
+    await handlePush(context);
+    expect(context.octokit.apps.createInstallationAccessToken).toBeCalledWith({
+      installation_id: event.payload.installation.id,
+      repository_ids: [event.payload.repository.id]
+    })
   })
 
   test('should call octokit createDispatchEvent correct data', async () => {
