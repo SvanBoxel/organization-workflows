@@ -3,8 +3,6 @@ name: Production deploy
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 env:
   CONTAINER_NAME: organization-workflows
@@ -49,7 +47,6 @@ jobs:
       name: production
       url: https://organization-workflows-bot.azurewebsites.net
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@master
     - name: 'Deploy to Azure Web App'
