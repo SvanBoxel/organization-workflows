@@ -1,4 +1,4 @@
-name: Production deploy
+name: Staging deploy
 
 on:
   push:
@@ -44,8 +44,8 @@ jobs:
     needs: [build-and-publish]
     if: github.ref == 'refs/heads/main'
     environment: 
-      name: production
-      url: https://organization-workflows-bot.azurewebsites.net
+      name: staging
+      url: https://organization-workflows-bot-staging.azurewebsites.net
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -53,7 +53,7 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.APP_NAME }}
-        slot-name: production
+        slot-name: staging
         images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_78bd60d0ca1e43dca5d19f76e28007bb }}
 
