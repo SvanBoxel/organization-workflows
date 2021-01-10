@@ -57,7 +57,7 @@ jobs:
                 ref: "${{ steps.push-content.outputs.ref }}"
             });
 
-            console.log(result);
+            console.log(result.data.check_runs);
       - name: delete repository
         uses: actions/github-script@v3
         with:
