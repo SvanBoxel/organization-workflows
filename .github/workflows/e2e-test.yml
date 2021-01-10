@@ -49,14 +49,15 @@ jobs:
           time: '10s'
       - name: check whether check is triggered
         uses: actions/github-script@v3
-        with: |
-          const result = await github.checks.listForRef({
-              owner: "${{ env.TEST_REPOSITORY }}",
-              repo: "${{ steps.random.outputs.repo }}",
-              ref: "${{ steps.push-content.outputs.ref }}"
-          });
-          
-          console.log(result)
+        with: 
+          script: |
+            const result = await github.checks.listForRef({
+                owner: "${{ env.TEST_REPOSITORY }}",
+                repo: "${{ steps.random.outputs.repo }}",
+                ref: "${{ steps.push-content.outputs.ref }}"
+            });
+
+            console.log(result);
       - name: delete repository
         uses: actions/github-script@v3
         with:
