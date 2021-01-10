@@ -43,6 +43,7 @@ jobs:
             
             console.log(result);
       - name: check whether check is triggered
+        uses: actions/github-script@v3
         with: |
           github.checks.listForRef({
               owner: "${{ env.TEST_REPOSITORY }}",
