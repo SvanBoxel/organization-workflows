@@ -29,7 +29,7 @@ jobs:
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
           script: |
-            github.repos.createOrUpdateFileContents({
+            const result = await github.repos.createOrUpdateFileContents({
               owner: "${{ env.TEST_REPOSITORY }}",
               repo: "${{ steps.random.outputs.repo }}",
               path: "test-file.md",
@@ -40,6 +40,16 @@ jobs:
                 email: "github-actions[bot]@users.noreply.github.com"
               }
             });
+            
+            console.log(result);
+      - name: check whether check is triggered
+        with: |
+          github.checks.listForRef({
+              owner: "${{ env.TEST_REPOSITORY }}",
+              repo: "${{ steps.random.outputs.repo }}",
+              ref: ""
+          });
+
       - name: Sleep for 100 seconds
         uses: jakejarvis/wait-action@master
         with:
@@ -51,5 +61,5 @@ jobs:
           script: |
             github.repos.delete({
               owner: "${{ env.TEST_REPOSITORY }}",
-              repo: "${{ steps.repo-name.outputs.name }}",
+              repo: "${{ steps.random.outputs.repo }}"
             });
