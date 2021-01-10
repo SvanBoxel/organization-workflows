@@ -22,9 +22,10 @@ jobs:
           script: |
             github.repos.createInOrg({
               org: "${{ env.TEST_REPOSITORY }}",
-              name: "${{ steps.random.outputs.repo }}",
+              name: "${{ steps.random.outputs.repo }}"
             });
       - name: push random contents
+        id: push-content
         uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
@@ -41,20 +42,21 @@ jobs:
               }
             });
             
-            console.log(result);
+            core.setOutput('ref', result.data.commit.sha);
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
       - name: check whether check is triggered
         uses: actions/github-script@v3
         with: |
-          github.checks.listForRef({
+          const result = await github.checks.listForRef({
               owner: "${{ env.TEST_REPOSITORY }}",
               repo: "${{ steps.random.outputs.repo }}",
-              ref: ""
+              ref: "${{ steps.push-content.outputs.ref }}"
           });
-
-      - name: Sleep for 100 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '100s'
+          
+          console.log(result)
       - name: delete repository
         uses: actions/github-script@v3
         with:
