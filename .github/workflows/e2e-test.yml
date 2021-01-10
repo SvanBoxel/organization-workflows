@@ -1,0 +1,16 @@
+name: Manual workflow
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  get-temp-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          application_id: 95690
+          application_private_key: ${{ secrets.CI_TEST_BOT_PRIVATE_KEY }} 
