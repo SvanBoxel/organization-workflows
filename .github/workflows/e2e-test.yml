@@ -31,7 +31,7 @@ jobs:
           script: |
             github.repos.createOrUpdateFileContents({
               owner: "${{ env.TEST_REPOSITORY }}",
-              repo: "${{ steps.repo-name.outputs.name }}",
+              repo: "${{ steps.repo-name.outputs.repo }}",
               path: "test-file.md",
               message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
               content: "${{ steps.random.outputs.content }}",
