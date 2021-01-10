@@ -46,7 +46,7 @@ jobs:
       - name: Sleep for 10 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '10s'
+          time: '30s'
       - name: check whether check is triggered
         uses: actions/github-script@v3
         with: 
