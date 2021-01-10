@@ -19,6 +19,6 @@ jobs:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
           script: |
             github.repos.createInOrg({
-              ${{ env.TEST_REPOSITORY }} ,
-              ${{ steps.vars.repo-name.name }},
+              org: ${{ env.TEST_REPOSITORY }} ,
+              name: ${{ steps.repo-name.outputs.name }},
             });
