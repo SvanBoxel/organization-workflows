@@ -13,7 +13,7 @@ jobs:
       - name: generate repository name
         id: repo-name
         run: |
-          echo ::set-output name=name::$(echo openssl rand -hex 3)
+          echo ::set-output name=name::$(openssl rand -hex 3)
       - uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
