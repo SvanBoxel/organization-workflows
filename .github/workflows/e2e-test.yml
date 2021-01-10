@@ -10,10 +10,11 @@ jobs:
   create-repository:
     runs-on: ubuntu-latest
     steps:
-      - name: generate repository name
-        id: repo-name
+      - name: generate random repository name and content
+        id: random
         run: |
-          echo ::set-output name=name::$(openssl rand -hex 3)
+          echo ::set-output name=repo::$(openssl rand -hex 3)
+          echo ::set-output name=content::$(dd if=/dev/urandom bs=1k count=1 2>/dev/null | base64)
       - name: create repository
         uses: actions/github-script@v3
         with:
@@ -21,12 +22,28 @@ jobs:
           script: |
             github.repos.createInOrg({
               org: "${{ env.TEST_REPOSITORY }}",
-              name: "${{ steps.repo-name.outputs.name }}",
+              name: "${{ steps.random.outputs.repo }}",
             });
-      - name: Sleep for 10 seconds
+      - name: push random contents
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.CI_TEST_TOKEN }}
+          script: |
+            github.repos.createOrUpdateFileContents({
+              owner: "${{ env.TEST_REPOSITORY }}",
+              repo: "${{ steps.repo-name.outputs.name }}",
+              path: "test-file.md",
+              message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
+              content: "${{ steps.random.outputs.content }}",
+              commiter: {
+                name: "github-actions[bot]",
+                email: "github-actions[bot]@users.noreply.github.com"
+              }
+            });
+      - name: Sleep for 100 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '3s'
+          time: '100s'
       - name: delete repository
         uses: actions/github-script@v3
         with:
