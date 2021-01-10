@@ -23,6 +23,10 @@ jobs:
               org: "${{ env.TEST_REPOSITORY }}",
               name: "${{ steps.repo-name.outputs.name }}",
             });
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
       - name: delete repository
         uses: actions/github-script@v3
         with:
