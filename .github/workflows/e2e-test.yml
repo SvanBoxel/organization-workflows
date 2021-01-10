@@ -4,13 +4,21 @@ on:
   push:
   workflow_dispatch:
 
+env: 
+  TEST_REPOSITORY: org-workflow-test-organization 
 jobs:
-  get-temp-token:
+  create-repository:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Token
-        id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v1
+      - name: generate repository name
+        id: repo-name
+        run: |
+          echo ::set-output name=repo_name::$(echo openssl rand -hex 3)
+      - uses: actions/github-script@v3
         with:
-          application_id: 95690
-          application_private_key: ${{ secrets.CI_TEST_BOT_PRIVATE_KEY }} 
+          github-token: ${{ secrets.CI_TEST_TOKEN }}
+          script: |
+            github.repos.createInOrg({
+              ${{ env.TEST_REPOSITORY }} ,
+              ${{ steps.vars.repo-name.name }},
+            });
