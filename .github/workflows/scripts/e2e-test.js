@@ -1,4 +1,5 @@
 module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
+  console.log(APP_ID, TEST_ORG);
   const repoName = Math.random().toString(36).substring(7)
   const buffer = new Buffer('Test commit');
   const content = buffer.toString('base64');
