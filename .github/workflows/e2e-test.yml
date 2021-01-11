@@ -31,7 +31,7 @@ jobs:
             const content = buffer.toString('base64');
 
             // Create repository
-            github.repos.createInOrg({
+            await github.repos.createInOrg({
               org: "${{ env.TEST_ORG }}",
               name: repoName
             });
