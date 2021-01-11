@@ -43,8 +43,8 @@ jobs:
             });
             
             core.setOutput('ref', result.data.commit.sha);
-      - name: Sleep for 20 seconds
-        run: sleep 20s
+      - name: Sleep for 40 seconds
+        run: sleep 40s
       - name: check whether check is triggered
         uses: actions/github-script@v3
         with: 
