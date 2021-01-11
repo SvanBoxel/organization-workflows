@@ -1,10 +1,14 @@
-name: Manual workflow
+name: E2E-test
 
 on:
   push:
     branches: [main, e2e-test]
   workflow_dispatch:
-  release:
+    inputs:
+      environment:
+        description: 'Environment to test'
+        required: true
+        default: 'production'
 
 env: 
   TEST_ORG: org-workflow-test-organization 
@@ -21,5 +25,12 @@ jobs:
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
           script: |
+            const envMap = {
+              production: ${{ env.APP_ID_PRODUCTION }},
+              staging: ${{ env.STAGING }}
+            }
+            
+            const APP_ID = envMap[ ${{ github.event.inputs.environment }} || 'production']
+            
             const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`)
-            console.log(script(${{ env.APP_ID_STAGING }}, "${{ env.TEST_ORG }}", {github, core}))
+            console.log(script(APP_ID, "${{ env.TEST_ORG }}", {github, core}))
