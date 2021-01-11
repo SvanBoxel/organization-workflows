@@ -56,7 +56,7 @@ jobs:
             const checkResult = await github.checks.listForRef({
               owner: "${{ env.TEST_ORG }}",
               repo: repoName,
-              ref: "${{ steps.push-content.outputs.ref }}"
+              ref: result.data.commit.sha
             });
   
             // Delete repository
