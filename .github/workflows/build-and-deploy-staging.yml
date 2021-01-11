@@ -56,9 +56,13 @@ jobs:
         slot-name: staging
         images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+        
   e2e-test:
     needs: [deploy]
     runs-on: ubuntu-latest
+    env:
+      TEST_ORG: org-workflow-test-organization 
+      APP_ID_STAGING: 93678
     steps:
     - uses: actions/checkout@v2
     - uses: actions/github-script@v3
@@ -67,4 +71,4 @@ jobs:
         script: |
           core.info(`Running e2e test for staging environment`);
           const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`);
-          await script(93678, "${{ env.TEST_ORG }}", {github, core});
+          await script(${{ env.APP_ID_STAGING }}, "${{ env.TEST_ORG }}", {github, core});
