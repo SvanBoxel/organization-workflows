@@ -23,6 +23,9 @@ export default async (app: Probot, { getRouter }: { getRouter: any }) => {
   router.get('/health', (_: Request, res: Response) => {
     const { connection, dbState } = dbStatus();
     const status = connection === 'up' && dbState === 'connected' ? 200 : 503
-    res.status(status).json(dbStatus())
+    res.status(status).json({
+      ...dbStatus(),
+      sha: process.env.SHA_REF || "unknown"
+    })
   })
 }
