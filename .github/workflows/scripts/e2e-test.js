@@ -22,8 +22,8 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
     }
   });
   
-  // Wait 40 seconds
-  await new Promise(r => setTimeout(r, 40000));
+  // Wait 45 seconds
+  await new Promise(r => setTimeout(r, 45000));
   
   // Check whether commit check is created
   const checkResult = await github.checks.listForRef({
