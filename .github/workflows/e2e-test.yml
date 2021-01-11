@@ -32,4 +32,4 @@ jobs:
             
             const APP_ID = envMap['${{ github.event.inputs.environment }}' || 'production']
             const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`)
-            console.log(script(APP_ID, "${{ env.TEST_ORG }}", {github, core}))
+            await script(APP_ID, "${{ env.TEST_ORG }}", {github, core})
