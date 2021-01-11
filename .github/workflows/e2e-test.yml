@@ -6,15 +6,13 @@ on:
 
 env: 
   TEST_REPOSITORY: org-workflow-test-organization 
-  APP_ID_STAGING: 93678
-  APP_ID_PRODUCTION: 93006
-  
+
 jobs:
   test-github-app:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        APP_ID: [env.APP_ID_STAGING, env.APP_ID_PRODUCTION]
+        APP_ID: [93678, 93006] # [staging, production]
     steps:
       - name: generate random repository name and content
         id: random
