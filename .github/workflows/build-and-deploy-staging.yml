@@ -56,6 +56,11 @@ jobs:
         slot-name: staging
         images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
         publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_STAGING }}
+  e2e-test:
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - uses: actions/github-script@v3
       with:
         github-token: ${{ secrets.CI_TEST_TOKEN }}
