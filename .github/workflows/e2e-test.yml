@@ -31,7 +31,6 @@ jobs:
             const content = buffer.toString('base64');
 
             // Create repository
-
             github.repos.createInOrg({
               org: "${{ env.TEST_ORG }}",
               name: repoName
@@ -63,7 +62,7 @@ jobs:
             // Delete repository
             github.repos.delete({
               owner: "${{ env.TEST_REPOSITORY }}",
-              repo: "${{ steps.random.outputs.repo }}"
+              repo: repoName
             });
             
             // Check whether check is created by this app
