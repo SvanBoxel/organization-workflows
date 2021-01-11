@@ -6,9 +6,15 @@ on:
 
 env: 
   TEST_REPOSITORY: org-workflow-test-organization 
+  APP_ID_STAGING: 93678
+  APP_ID_PRODUCTION: 93006
+  
 jobs:
-  create-repository:
+  test-github-app:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        APP_ID: [APP_ID_STAGING, APP_ID_PRODUCTION]
     steps:
       - name: generate random repository name and content
         id: random
@@ -55,8 +61,7 @@ jobs:
                 ref: "${{ steps.push-content.outputs.ref }}"
             });
 
-            console.log(result.data)
-            if(!result.data.check_runs.some(check => check.app.id === 93678)) {
+            if(!result.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
               core.setFailed("central workflow wasn't triggered");
             }
       - name: delete repository
