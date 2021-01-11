@@ -55,7 +55,7 @@ jobs:
                 ref: "${{ steps.push-content.outputs.ref }}"
             });
 
-            console.log(result.data.check_runs)
+            console.log(result.data)
             if(!result.data.check_runs.some(check => check.app.id === 93678)) {
               core.setFailed("central workflow wasn't triggered");
             }
