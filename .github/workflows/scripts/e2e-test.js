@@ -38,6 +38,7 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
     repo: repoName
   });
   
+  console.log(checkResult);
   // Check whether check is created by this app
   if(!checkResult.data.check_runs.some(check => check.app.id === APP_ID)) {
     core.setFailed("central workflow wasn't triggered");
