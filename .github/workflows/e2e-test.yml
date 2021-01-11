@@ -61,7 +61,7 @@ jobs:
   
             // Delete repository
             github.repos.delete({
-              owner: "${{ env.TEST_REPOSITORY }}",
+              owner: "${{ env.TEST_ORG }}",
               repo: repoName
             });
             
