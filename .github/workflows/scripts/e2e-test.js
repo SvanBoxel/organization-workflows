@@ -5,13 +5,13 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
 
   // Create repository
   await github.repos.createInOrg({
-    org: env.TEST_ORG,
+    org: TEST_ORG,
     name: repoName
   });
   
   // Push content
   const result = await github.repos.createOrUpdateFileContents({
-    owner: env.TEST_ORG,
+    owner: TEST_ORG,
     repo: repoName,
     path: "test-file.md",
     message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
