@@ -31,44 +31,40 @@ jobs:
             const content = buffer.toString('base64');
 
             // Create repository
-            try {
-              github.repos.createInOrg({
-                org: "${{ env.TEST_ORG }}",
-                name: repoName
-              });
 
-              // Push content
-              const result = await github.repos.createOrUpdateFileContents({
-                owner: "${{ env.TEST_ORG }}",
-                repo: repoName,
-                path: "test-file.md",
-                message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
-                content: content,
-                commiter: {
-                  name: "github-actions[bot]",
-                  email: "github-actions[bot]@users.noreply.github.com"
-                }
-              });
+            github.repos.createInOrg({
+              org: "${{ env.TEST_ORG }}",
+              name: repoName
+            });
 
-              // Wait 40 seconds
-              await new Promise(r => setTimeout(r, 40000));
+            // Push content
+            const result = await github.repos.createOrUpdateFileContents({
+              owner: "${{ env.TEST_ORG }}",
+              repo: repoName,
+              path: "test-file.md",
+              message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
+              content: content,
+              commiter: {
+                name: "github-actions[bot]",
+                email: "github-actions[bot]@users.noreply.github.com"
+              }
+            });
 
-              // Check whether commit check is created
-              const checkResult = await github.checks.listForRef({
-                  owner: "${{ env.TEST_ORG }}",
-                  repo: repoName,
-                  ref: "${{ steps.push-content.outputs.ref }}"
-              });
-            } catch (e) {
-             // 
-            }
+            // Wait 40 seconds
+            await new Promise(r => setTimeout(r, 40000));
 
+            // Check whether commit check is created
+            const checkResult = await github.checks.listForRef({
+              owner: "${{ env.TEST_ORG }}",
+              repo: repoName,
+              ref: "${{ steps.push-content.outputs.ref }}"
+            });
+  
             // Delete repository
             github.repos.delete({
               owner: "${{ env.TEST_REPOSITORY }}",
               repo: "${{ steps.random.outputs.repo }}"
             });
-            
             
             // Check whether check is created by this app
             if(!checkResult.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
