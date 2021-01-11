@@ -43,8 +43,8 @@ jobs:
             });
             
             core.setOutput('ref', result.data.commit.sha);
-      - name: Sleep for 15 seconds
-        run: sleep 15s
+      - name: Sleep for 20 seconds
+        run: sleep 20s
       - name: check whether check is triggered
         uses: actions/github-script@v3
         with: 
@@ -55,6 +55,7 @@ jobs:
                 ref: "${{ steps.push-content.outputs.ref }}"
             });
 
+            console.log(result.data.check_runs)
             if(!result.data.check_runs.some(check => check.app.id === 93678)) {
               core.setFailed("central workflow wasn't triggered");
             }
