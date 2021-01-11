@@ -2,10 +2,12 @@ name: Manual workflow
 
 on:
   push:
+    branches: [main, e2e-test]
   workflow_dispatch:
+  release:
 
 env: 
-  TEST_REPOSITORY: org-workflow-test-organization 
+  TEST_ORG: org-workflow-test-organization 
 
 jobs:
   test-github-app:
@@ -24,51 +26,48 @@ jobs:
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
           script: |
+            const repoName = Math.random().toString(36).substring(7)
+            const buffer = new Buffer('Test commit');
+            const content = buffer.toString('base64');
+
+            // Create repository
             github.repos.createInOrg({
-              org: "${{ env.TEST_REPOSITORY }}",
-              name: "${{ steps.random.outputs.repo }}"
+              org: "${{ env.TEST_ORG }}",
+              name: repoName
             });
-      - name: push random contents
-        id: push-content
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.CI_TEST_TOKEN }}
-          script: |
+            
+            // Push content
             const result = await github.repos.createOrUpdateFileContents({
-              owner: "${{ env.TEST_REPOSITORY }}",
-              repo: "${{ steps.random.outputs.repo }}",
+              owner: "${{ env.TEST_ORG }}",
+              repo: repoName,
               path: "test-file.md",
               message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
-              content: "${{ steps.random.outputs.content }}",
+              content: content,
               commiter: {
                 name: "github-actions[bot]",
                 email: "github-actions[bot]@users.noreply.github.com"
               }
             });
             
-            core.setOutput('ref', result.data.commit.sha);
-      - name: Sleep for 40 seconds
-        run: sleep 40s
-      - name: check whether check is triggered
-        uses: actions/github-script@v3
-        with: 
-          script: |
+            // Wait 40 seconds
+            await new Promise(r => setTimeout(r, 40000));
+            
+            // Check whether commit check is created
             const result = await github.checks.listForRef({
-                owner: "${{ env.TEST_REPOSITORY }}",
-                repo: "${{ steps.random.outputs.repo }}",
+                owner: "${{ env.TEST_ORG }}",
+                repo: repoName,
                 ref: "${{ steps.push-content.outputs.ref }}"
             });
 
-            if(!result.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
-              core.setFailed("central workflow wasn't triggered");
-            }
-      - name: delete repository
-        if: always()
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ secrets.CI_TEST_TOKEN }}
-          script: |
+            // Delete repository
             github.repos.delete({
               owner: "${{ env.TEST_REPOSITORY }}",
               repo: "${{ steps.random.outputs.repo }}"
             });
+            
+            
+            // Check whether check is created by this app
+            if(!result.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
+              core.setFailed("central workflow wasn't triggered");
+            }
+            
