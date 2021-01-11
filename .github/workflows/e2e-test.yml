@@ -31,33 +31,37 @@ jobs:
             const content = buffer.toString('base64');
 
             // Create repository
-            github.repos.createInOrg({
-              org: "${{ env.TEST_ORG }}",
-              name: repoName
-            });
-            
-            // Push content
-            const result = await github.repos.createOrUpdateFileContents({
-              owner: "${{ env.TEST_ORG }}",
-              repo: repoName,
-              path: "test-file.md",
-              message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
-              content: content,
-              commiter: {
-                name: "github-actions[bot]",
-                email: "github-actions[bot]@users.noreply.github.com"
-              }
-            });
-            
-            // Wait 40 seconds
-            await new Promise(r => setTimeout(r, 40000));
-            
-            // Check whether commit check is created
-            const result = await github.checks.listForRef({
+            try {
+              github.repos.createInOrg({
+                org: "${{ env.TEST_ORG }}",
+                name: repoName
+              });
+
+              // Push content
+              const result = await github.repos.createOrUpdateFileContents({
                 owner: "${{ env.TEST_ORG }}",
                 repo: repoName,
-                ref: "${{ steps.push-content.outputs.ref }}"
-            });
+                path: "test-file.md",
+                message: "Test commit for https://github.com/SvanBoxel/organization-workflows",
+                content: content,
+                commiter: {
+                  name: "github-actions[bot]",
+                  email: "github-actions[bot]@users.noreply.github.com"
+                }
+              });
+
+              // Wait 40 seconds
+              await new Promise(r => setTimeout(r, 40000));
+
+              // Check whether commit check is created
+              const checkResult = await github.checks.listForRef({
+                  owner: "${{ env.TEST_ORG }}",
+                  repo: repoName,
+                  ref: "${{ steps.push-content.outputs.ref }}"
+              });
+            } catch (e) {
+             // 
+            }
 
             // Delete repository
             github.repos.delete({
@@ -67,7 +71,7 @@ jobs:
             
             
             // Check whether check is created by this app
-            if(!result.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
+            if(!checkResult.data.check_runs.some(check => check.app.id === ${{ matrix.APP_ID }})) {
               core.setFailed("central workflow wasn't triggered");
             }
             
