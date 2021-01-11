@@ -3,8 +3,6 @@ name: E2E-test
 on:
   schedule:
     - cron: "0 0 * * *"  
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -22,8 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: create repository
-        uses: actions/github-script@v3
+      - uses: actions/github-script@v3
         with:
           github-token: ${{ secrets.CI_TEST_TOKEN }}
           script: |
@@ -32,7 +29,7 @@ jobs:
               staging: ${{ env.APP_ID_STAGING }}
             }
             
-            const default_env = "${{ GITHUB.EVENT_NAME }}" === "push" ? 'staging' : 'production';
+            const default_env = 'production';
             const env = '${{ github.event.inputs.environment }}' || default_env;
             core.info(`Running e2e test for ${default_env} environment`);
             
