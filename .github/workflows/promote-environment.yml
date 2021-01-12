@@ -1,0 +1,56 @@
+name: Promote server environment
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+  push: 
+
+env:
+  RESOURCE_GROUP: organization-workflows-bot
+  APP_NAME: organization-workflows-bot
+  TEST_ORG: org-workflow-test-organization 
+  APP_ID_STAGING: 93678
+  APP_ID_PRODUCTION: 93006
+  
+jobs:
+  e2e-staging:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/github-script@v3
+      with:
+        github-token: ${{ secrets.CI_TEST_TOKEN }}
+        script: |
+          core.info(`Running e2e test for staging environment`);
+
+          const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`);
+          await script(${{ env.APP_ID_STAGING }}, "${{ env.TEST_ORG }}", {github, core});
+
+  promote-environment:
+    needs: [e2e-staging]
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ github.event.inputs.target-slot }}
+      url: https://organization-workflows-bot.azurewebsites.net/
+    steps: 
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Swap environment slots
+        run: |
+          az webapp deployment slot swap  -g ${{ env.RESOURCE_GROUP }} -n ${{ env.APP_NAME }} --slot staging --target-slot production --debug
+  e2e-production:
+    needs: [promote-environment]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/github-script@v3
+      with:
+        github-token: ${{ secrets.CI_TEST_TOKEN }}
+        script: |
+          core.info(`Running e2e test for production environment`);
+
+          const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`);
+          await script(${{ env.APP_ID_PRODUCTION }}, "${{ env.TEST_ORG }}", {github, core});
