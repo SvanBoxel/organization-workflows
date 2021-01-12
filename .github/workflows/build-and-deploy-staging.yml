@@ -67,7 +67,7 @@ jobs:
     - name: Load App
       timeout-minutes: 2
       continue-on-error: true
-      run: https://organization-workflows-bot-staging.azurewebsites.net/org-workflows/health
+      run: curl https://organization-workflows-bot-staging.azurewebsites.net/org-workflows/health
 
   e2e-test:
     needs: [deploy]
