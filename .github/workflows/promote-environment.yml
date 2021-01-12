@@ -4,7 +4,6 @@ on:
   release:
     types: [created]
   workflow_dispatch:
-  push: 
 
 env:
   RESOURCE_GROUP: organization-workflows-bot
@@ -40,7 +39,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - name: Swap environment slots
         run: |
-          az webapp deployment slot swap  -g ${{ env.RESOURCE_GROUP }} -n ${{ env.APP_NAME }} --slot staging --target-slot production --debug
+          az webapp deployment slot swap  -g ${{ env.RESOURCE_GROUP }} -n ${{ env.APP_NAME }} --slot staging --target-slot production
   e2e-production:
     needs: [promote-environment]
     runs-on: ubuntu-latest
