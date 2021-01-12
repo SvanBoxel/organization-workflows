@@ -1,5 +1,8 @@
 name: 'Organization workflow action'
 description: 'Action to register organization workflow'
+branding:
+  icon: 'check-circle'
+  color: 'white'
 inputs:
   id: 
     description: 'ID of run (provided by GitHub app via `github.event.client_payload.id`)'
