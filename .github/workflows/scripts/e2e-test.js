@@ -4,12 +4,14 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
   const content = buffer.toString('base64');
 
   // Create repository
+  console.log('creating repository...')
   await github.repos.createInOrg({
     org: TEST_ORG,
     name: repoName
   });
   
   // Push content
+  console.log('creating and pushing commit...')
   const result = await github.repos.createOrUpdateFileContents({
     owner: TEST_ORG,
     repo: repoName,
@@ -23,9 +25,11 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
   });
   
   // Wait 45 seconds
+  console.log('Waiting for run...')
   await new Promise(r => setTimeout(r, 45000));
   
   // Check whether commit check is created
+  console.log('Checking result...')
   const checkResult = await github.checks.listForRef({
     owner: TEST_ORG,
     repo: repoName,
@@ -33,6 +37,7 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
   });
   
   // Delete repository
+  console.log('Deleting result...')
   github.repos.delete({
     owner: TEST_ORG,
     repo: repoName
