@@ -52,18 +52,23 @@ jobs:
     - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: 'Deploy to Azure Web App'
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.APP_NAME }}
-        slot-name: staging
-        images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
     - uses: azure/appservice-settings@v1
       with:
         app-name: ${{ env.APP_NAME }}
         mask-inputs: false
         slot-name: staging
         app-settings-json: '[{ "name": "SHA_REF", "value": "${{ github.sha }}"}]'
+    - name: 'Deploy to Azure Web App'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.APP_NAME }}
+        slot-name: staging
+        images: ${{ env.REGISTRY }}${{ env.REPO }}:${{ github.sha }}
+    - name: Load App
+      timeout-minutes: 2
+      continue-on-error: true
+      run: https://organization-workflows-bot-staging.azurewebsites.net/org-workflows/health
+
   e2e-test:
     needs: [deploy]
     runs-on: ubuntu-latest
