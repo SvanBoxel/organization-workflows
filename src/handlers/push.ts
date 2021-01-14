@@ -5,7 +5,7 @@ import Run from '../models/runs.model'
 import { default_organization_repository, app_route, config_keys } from "../constants";
 
 export const repository_dispatch_type = 'org-workflow-bot'
-export const config_path = '.github/organization-workflows-settings.yml'
+export const config_path = 'organization-workflows-settings.yml'
 
 async function handlePush(context: Context): Promise<void> {
   const { config } = await context.octokit.config.get({

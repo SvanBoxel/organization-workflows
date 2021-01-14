@@ -91,7 +91,7 @@ When installed in an organization, the app's logic is triggered by any `push` ev
 To map commits, checks, and workflow run, and to make sure workflows can rerun without any problem, some data persistence is needed. Because of this you need to register the run at the start of a workflow. When the workflow finishes the app retrieves what source repository and commit triggered the central workflow, and exposes the workflow results back to the original commit. This data (source repository, check id, sha, and run id) is automatically removed after 90 days. 
 
 ## App configuration
-Optionally you can define a custom configuration in the `.github` repository under the `.github/organization-workflows-settings.yml` path. This configuration should be defined as a YAML file and - for now - has a single configuration setting.
+Optionally you can define a custom configuration in the `.github` repository by creating a `organization-workflows-settings.yml` file. This configuration should be defined as a YAML file and - for now - has a single configuration setting.
 
 `workflows_repository`: The repository where your organization workflows are defined. (default: `.github`) 
 
