@@ -24,6 +24,7 @@ on:
     types: [org-workflow-bot]  # <-- requirement to trigger central workflows 
 ```
 
+> 💡 Don't want to store your organization workflows in the `.github` repository? You can define a custom repository in the [configuration file](#app-configuration).
 ### Registering the run
 To let this app keep track of Action runs and expose this information back to the original commit in the source repository it needs to register the workflow run. Like in the example below, start the workflow by registering the run. After this you can add your steps and jobs like you would in a typical Actions workflow.
 
@@ -89,16 +90,25 @@ When installed in an organization, the app's logic is triggered by any `push` ev
 
 To map commits, checks, and workflow run, and to make sure workflows can rerun without any problem, some data persistence is needed. Because of this you need to register the run at the start of a workflow. When the workflow finishes the app retrieves what source repository and commit triggered the central workflow, and exposes the workflow results back to the original commit. This data (source repository, check id, sha, and run id) is automatically removed after 90 days. 
 
+## App configuration
+Optionally you can define a custom configuration in the `.github` repository under the `.github/organization-workflows-settings.yml` path. This configuration should be defined as a YAML file and - for now - has a single configuration setting.
+
+`workflows_repository`: The repository where your organization workflows are defined. (default: `.github`) 
+
+```yml
+workflows_repository: our-organization-workflows
+```
 ## Action inputs
+The following inputs should be provided for every organization workflow.
 
 - **id (required)**: ID of run (provided by GitHub app via `github.event.client_payload.id`)  
 - **run_id (required)**: ID of workflow run (provided via GitHub syntax `github.run_id`)  
 - **name (required)**: Name of check (Use `github.workflow` to use the name of the workflow)  
 - **callback_url (required)**: Callback url for register call (provided by GitHub app via `github.event.client_payload.callback_url`)  
 - **sha (required)**: Sha of original commit (provided by GitHub app via `github.event.client_payload.sha`)  
-- **enforce**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks). _Default: false_ 
-- **enforce_admin** Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks) for admins. _Default: false_
-- **documentation**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`) _Default: null_
+- **enforce (optional)**: Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks). _Default: false_ 
+- **enforce_admin (optional)** Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks) for admins. _Default: false_
+- **documentation (optional)**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`) _Default: null_
     
 ```yml
     - uses: SvanBoxel/organization-workflow@main
@@ -112,6 +122,7 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
         enforce_admin: true
         documentation: "README.md"
 ```
+
 ## Development
 ### Codespaces
 A [Codespaces environment](https://github.com/features/codespaces) is defined so you can get started right away. Open this repository in the codespace and run `npm run dev` to start the app in development mode. It will prompt you to follow a couple of instruction to configure your GitHub app and set your .env values. 
