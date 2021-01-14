@@ -1,6 +1,8 @@
 # Organization workflows app
 
-This GitHub app allows you to centrally manage and run multiple [GitHub Actions](https://github.com/features/actions) workflows across multiple repositories. Currently this is a limitation in GitHub Actions, as it only allows you to configure and manage Actions workflows on a repository level. This app helps you - for example - to centrally define central workflows for linting, compliance checks, and more.
+This GitHub app allows you to run [GitHub Actions](https://github.com/features/actions) workflows across multiple repositories, which is [not yet natively suppoprted](https://github.com/github/roadmap/issues/52). This app helps you - for example - to create a single workflow definition that is used for linting, compliance checks, and more.
+
+This app may not be right for you if your repositories contain confidential data. This app receives information about push events from your repositories, and persists information including the check ID, SHA, and run ID. You can optionally run the app yourself if you'd like to manage the deployment and data storage. See [Development](https://github.com/SvanBoxel/organization-workflows#development).
 
 ## Installation
 You can install the app by [clicking here](https://github.com/apps/organization-workflows-production). Make sure you install it on all repositories:
@@ -11,7 +13,7 @@ If you don't want to install it on all repositories, then make sure to at least 
 
 <img width="400" alt="Screenshot 2020-12-18 at 17 14 27" src="https://user-images.githubusercontent.com/24505883/102636098-81763c80-4154-11eb-80f5-50e21b33020f.png">
 
-After you install the app, you can create a centrally managed workflow. There are a couple of things to keep in mind when you do this: 
+After you install the app, you can create a centrally defined workflow. There are a couple of things to keep in mind when you do this: 
 
 ### Listening to the right event
 This app dispatches workflow runs with the `repository_dispatch` event and the `org-workflow-bot` type. Create a new workflow in the `.github/workflows` directory of your organization's `.github` repository with the yml definition below:
