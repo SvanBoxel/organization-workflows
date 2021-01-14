@@ -47,7 +47,10 @@ describe('completed run handler', () => {
         name: "org-workflow/santa-linter",
         run_id: 2910,
         checks_run_id: 29104,
-      }]
+      }],
+      config: {
+        workflows_repository: '.github'
+      }
     }
 
     mockingoose(runsModel).toReturn(_doc, 'findOne');
