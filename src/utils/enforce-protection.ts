@@ -1,5 +1,4 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
-const organization_repository = '.github'
 
 async function enforceProtection (
   octokit: Context['octokit'],
@@ -29,8 +28,6 @@ async function enforceProtection (
   
   if (enforce_admins === true) {
     enforce_admin = true
-  } else if (repository.repo === organization_repository) {
-    enforce_admins = false
   } else if (enforce_admin) {
     enforce_admins = enforce_admin
   }

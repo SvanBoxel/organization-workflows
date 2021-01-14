@@ -23,11 +23,13 @@
     "test:watch": "jest --watch --notify --notifyMode=change --coverage"
   },
   "dependencies": {
+    "lodash.pick": "^4.4.0",
     "mongoose": "^5.11.8",
     "probot": "^11.0.1"
   },
   "devDependencies": {
     "@types/jest": "^25.1.0",
+    "@types/lodash.pick": "^4.4.6",
     "@types/nock": "^11.1.0",
     "@types/node": "^13.1.0",
     "@typescript-eslint/eslint-plugin": "^4.10.0",

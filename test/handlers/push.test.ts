@@ -47,6 +47,10 @@ describe('push handler', () => {
       createDispatchEvent: jest.fn().mockImplementation(async () => {})
     } as any
 
+    context.octokit.config = {
+      get: jest.fn().mockImplementation(async () => ({ config: { workflows_repository: '.github' } }))
+    }
+
     mockingoose(runsModel).toReturn({ _id: id }, 'save');
   })
 
