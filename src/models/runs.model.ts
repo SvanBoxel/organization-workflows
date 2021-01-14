@@ -17,6 +17,9 @@ export interface IRun extends mongoose.Document {
     name: string;
     full_name: string;
   },
+  config: {
+    workflows_repository: string;
+  }
   expire_at?: Date
 }
 
@@ -32,6 +35,9 @@ export const RunSchema = new mongoose.Schema({
     owner: String,
     name: String,
     full_name: String
+  },
+  config: {
+    workflows_repository: String
   }
 })
 
@@ -43,6 +49,7 @@ RunSchema.index(
   }, { 
     expireAfterSeconds: runExpiry 
   })
+  
 const Run = mongoose.model<IRun>('Run', RunSchema)
 
 export default Run

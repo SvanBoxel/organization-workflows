@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 import Runs, { ICheck } from '../models/runs.model'
 import enforceProtection from '../utils/enforce-protection'
-import { organization_repository, github_host } from "../constants";
+import { github_host } from "../constants";
 
 async function handleRegister(
   req: Request, 
@@ -21,7 +21,7 @@ async function handleRegister(
     repo: run.repository.name,
     head_sha: run.sha,
     name: name as string,
-    details_url: `${github_host}/${run.repository.owner}/${organization_repository}/actions/runs/${run_id}`,
+    details_url: `${github_host}/${run.repository.owner}/${run.config.workflows_repository}/actions/runs/${run_id}`,
     status: 'in_progress'
   }
 
@@ -33,7 +33,7 @@ async function handleRegister(
     try {
       const docs = await octokit.repos.getContent({
         owner: run.repository.owner,
-        repo: organization_repository,
+        repo: run.config.workflows_repository,
         path: documentation as string
       })
 
@@ -51,7 +51,7 @@ async function handleRegister(
       octokit,
       { owner: run.repository.owner, repo: run.repository.name },
       data.name,
-      enforce_admin === 'true'
+      run.repository.name !== run.config.workflows_repository && enforce_admin === 'true' // Exclude the repository that contains the workflow. 
     )
   }
   

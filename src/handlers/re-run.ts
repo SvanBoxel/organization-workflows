@@ -1,6 +1,5 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import Runs from '../models/runs.model'
-import { organization_repository } from "../constants";
 
 async function handleReRun(context: Context): Promise<void> {
   if (!context?.payload?.check_run?.id) return
@@ -13,7 +12,7 @@ async function handleReRun(context: Context): Promise<void> {
 
   await context.octokit.actions.reRunWorkflow({
     owner: run.repository.owner,
-    repo: organization_repository,
+    repo: run.config.workflows_repository,
     run_id: check.run_id || 0
   })
 }
