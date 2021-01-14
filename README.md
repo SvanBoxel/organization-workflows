@@ -2,11 +2,7 @@
 
 This GitHub app allows you to run [GitHub Actions](https://github.com/features/actions) workflows across multiple repositories, which is [not yet natively suppoprted](https://github.com/github/roadmap/issues/52). This app helps you - for example - to create a single workflow definition that is used for linting, compliance checks, and more.
 
-This app may not be right for you if:
-* You require production quality. This app is considered expeirmental and runs on a free Heroku dyno
-* Your repositories contain confidential data. This app receives information about push events from your repositories, and persists information including the check ID, SHA, and run ID
-
-You can optionally run the app yourself if you'd like to manage the deployment and data storage. See [Development](https://github.com/SvanBoxel/organization-workflows#development).
+This app may not be right for you if your repositories contain confidential data. This app receives information about push events from your repositories, and persists information including the check ID, SHA, and run ID. You can optionally run the app yourself if you'd like to manage the deployment and data storage. See [Development](https://github.com/SvanBoxel/organization-workflows#development).
 
 ## Installation
 You can install the app by [clicking here](https://github.com/apps/organization-workflows-production). Make sure you install it on all repositories:
