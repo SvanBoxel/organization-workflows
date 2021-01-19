@@ -19,4 +19,10 @@ jobs:
       - run: "echo installations: '${{ steps.stats.outputs.installations }}'"
       - run: "echo repositories: '${{ steps.stats.outputs.repositories }}'"
       - run: "echo suspended: '${{ steps.stats.outputs.suspended_installations }}'"
+      - run: touch a.json
+      - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
+        with:
+          source_dir: .
+          container_name: stats
+          connection_string: ${{ secrets.STATS_CONNECTION_STRING }}
 #       - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
