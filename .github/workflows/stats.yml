@@ -3,9 +3,6 @@ name: App Stats
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
-      - app-stats 
 
 jobs:
   log:
