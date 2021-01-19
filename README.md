@@ -5,7 +5,7 @@ This GitHub app allows you to run [GitHub Actions](https://github.com/features/a
 This app may not be right for you if your repositories contain confidential data. This app receives information about push events from your repositories, and persists information including the check ID, SHA, and run ID. You can optionally run the app yourself if you'd like to manage the deployment and data storage. See [Development](https://github.com/SvanBoxel/organization-workflows#development).
 
 ## Installation
-You can install the app by [clicking here](https://github.com/apps/organization-workflows-production). Make sure you install it on all repositories:
+You can install the app by [clicking here](https://github.com/apps/organization-workflows). Make sure you install it on all repositories:
 
 <img width="400" alt="Screenshot 2020-12-18 at 17 12 00" src="https://user-images.githubusercontent.com/24505883/102635920-4247eb80-4154-11eb-9ec2-0cb8bc58196c.png">
 
