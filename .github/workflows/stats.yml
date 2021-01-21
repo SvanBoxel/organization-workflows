@@ -1,0 +1,23 @@
+name: Update app stats
+
+on:
+  workflow_dispatch:
+  push: 
+    branches: [main]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: gr2m/app-stats-action@v1.x
+        id: stats
+        with:
+          id: 93006
+          private_key: ${{ secrets.APP_KEY_PROD }}
+      - run: |
+          echo '{"apps": ${{ steps.stats.outputs.installations }}, "popular": ${{ steps.stats.outputs.popular_repositories }} }' > stats.json
+      - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
+        with:
+          source_dir: .
+          container_name: stats
+          connection_string: ${{ secrets.STATS_CONNECTION_STRING }}

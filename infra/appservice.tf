@@ -45,7 +45,9 @@ resource "azurerm_app_service" "bot-app-service" {
       "APP_ID"          = module.vault.bot-app-id-production
       "PRIVATE_KEY"     = module.vault.bot-private-key-production
       "WEBHOOK_SECRET"  = module.vault.bot-webhook-secret-production
-      "DB_NAME" = "production"
+      "DB_NAME"         = "production"
+
+      "STATS_URI"       = "${azurerm_storage_account.bot-storage.primary_blob_endpoint}${azurerm_storage_container.bot-storage-container.name}/stats.json"
     }
   )
 
@@ -73,7 +75,7 @@ resource "azurerm_app_service_slot" "bot-app-service-staging-slot" {
       "APP_ID"          = module.vault.bot-app-id-staging
       "PRIVATE_KEY"     = module.vault.bot-private-key-staging
       "WEBHOOK_SECRET"  = module.vault.bot-webhook-secret-staging
-      "DB_NAME" = "staging"
+      "DB_NAME"         = "staging"
     }
   )
 }
