@@ -17,7 +17,11 @@ jobs:
       - run: "echo repositories: '${{ steps.stats.outputs.repositories }}'"
       - run: "echo suspended: '${{ steps.stats.outputs.suspended_installations }}'"
 #     - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
-        
+      - run: |
+          jq -n \
+                  --arg installations "${{ steps.stats.outputs.installations }}" \
+                  --arg popular "${{ steps.stats.outputs.popular_repositories }}" \
+                   '{installations: $installations, popular: $popular}'
       - uses: bacongobbler/azure-blob-storage-upload@v1.1.1
         with:
           source_dir: .
