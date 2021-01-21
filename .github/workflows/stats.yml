@@ -16,7 +16,7 @@ jobs:
       - run: "echo installations: '${{ steps.stats.outputs.installations }}'"
       - run: "echo repositories: '${{ steps.stats.outputs.repositories }}'"
       - run: "echo suspended: '${{ steps.stats.outputs.suspended_installations }}'"
-#     - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
+      - run: "echo most popular repositories: '${{ steps.stats.outputs.popular_repositories }}'"
       - run: |
           jq -n \
                   --arg installations "${{ steps.stats.outputs.installations }}" \
