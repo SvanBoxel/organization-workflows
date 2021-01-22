@@ -6,6 +6,7 @@ import runsModel from '../../src/models/runs.model';
 describe('push handler', () => {
   let event: any
   let context: Context
+  let config: any;
   let token: string;
   let id: string;
   let callback_url: string;
@@ -47,38 +48,86 @@ describe('push handler', () => {
       createDispatchEvent: jest.fn().mockImplementation(async () => {})
     } as any
 
+    config = {
+      workflows_repository: '.github',
+      include_workflows_repository: false,
+      exclude: {
+        repositories: []
+      }
+    }
     context.octokit.config = {
-      get: jest.fn().mockImplementation(async () => ({ config: { workflows_repository: '.github' } }))
+      get: jest.fn().mockImplementation(async () => ({ config }))
     }
 
     mockingoose(runsModel).toReturn({ _id: id }, 'save');
   })
 
-  test('should createInstallationAccessToken that is scoped to push repository', async () => {
-    await handlePush(context);
-    expect(context.octokit.apps.createInstallationAccessToken).toBeCalledWith({
-      installation_id: event.payload.installation.id,
-      repository_ids: [event.payload.repository.id]
+  describe('include/exclude logic', () => {
+    describe('current repository is workflow repository', () => {
+      beforeEach(() => {
+        event.payload.repository.name = '.github'
+      });
+
+      test('should not call createInstallationToken', async () => {
+        await handlePush(context);
+        expect(context.octokit.apps.createInstallationAccessToken).not.toBeCalled();
+      });
+    });
+
+    describe('current repository is workflow repository but workflow repository should be included', () => {
+      beforeEach(() => {
+        event.payload.repository.name = '.github'
+        config.include_workflows_repository = true
+      });
+
+      test('should not call createInstallationToken', async () => {
+        await handlePush(context);
+        expect(context.octokit.apps.createInstallationAccessToken).toBeCalled();
+      });
+    });
+
+    describe('current repository is not workflow repository', () => {
+      beforeEach(() => {
+        event.payload.repository.name = 'foo-github'
+      });
+
+      test('should call createInstallationToken', async () => {
+        await handlePush(context);
+        expect(context.octokit.apps.createInstallationAccessToken).toBeCalled();
+      });
+    });
+  });
+
+  describe('createInstallationAccessToken logic', () => {
+    test('should createInstallationAccessToken that is scoped to push repository', async () => {
+      await handlePush(context);
+      expect(context.octokit.apps.createInstallationAccessToken).toBeCalledWith({
+        installation_id: event.payload.installation.id,
+        repository_ids: [event.payload.repository.id]
+      })
     })
   })
 
-  test('should call octokit createDispatchEvent correct data', async () => {
-    await handlePush(context);
-    expect(context.octokit.repos.createDispatchEvent).toBeCalledWith({
-      owner: context.payload.repository.owner.login, 
-      repo: ".github",
-      event_type: "org-workflow-bot",
-      client_payload: {
-        sha: context.payload.after, 
-        token: token,
-        callback_url: `${callback_url}/org-workflows/register`, 
-        id: id, 
-        repository: { 
-          full_name: context.payload.repository.full_name, 
-          name: context.payload.repository.name, 
-          owner: context.payload.repository.owner.login, 
+
+  describe('createDispatchEvent logic', () => {
+    test('should call octokit createDispatchEvent correct data', async () => {
+      await handlePush(context);
+      expect(context.octokit.repos.createDispatchEvent).toBeCalledWith({
+        owner: context.payload.repository.owner.login, 
+        repo: ".github",
+        event_type: "org-workflow-bot",
+        client_payload: {
+          sha: context.payload.after, 
+          token: token,
+          callback_url: `${callback_url}/org-workflows/register`, 
+          id: id, 
+          repository: { 
+            full_name: context.payload.repository.full_name, 
+            name: context.payload.repository.name, 
+            owner: context.payload.repository.owner.login, 
+          }
         }
-      }
+      })
     })
   })
 });
