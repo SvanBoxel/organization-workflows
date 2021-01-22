@@ -1,8 +1,8 @@
 import shouldRun from '../../src/utils/should-run';
 
 describe('should run logic', () => {
-  let repositoryName;
-  let exclude;
+  let repositoryName: string;
+  let exclude: string[];
   
   beforeEach(() => {
     repositoryName = 'foobar';
