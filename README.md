@@ -96,9 +96,18 @@ To map commits, checks, and workflow run, and to make sure workflows can rerun w
 Optionally you can define a custom configuration in the `.github` repository by creating a `organization-workflows-settings.yml` file. This configuration should be defined as a YAML file and - for now - has a single configuration setting.
 
 `workflows_repository`: The repository where your organization workflows are defined. (default: `.github`) 
+`include_workflows_repository`: Whether to run these checks for the central workflows_repository. (default: `false`) 
+`exclude.repositories`: Repositories that are excluded and should not trigger organization workflows. Accepts wildcards (default: `[]`)
 
 ```yml
 workflows_repository: our-organization-workflows
+include_workflows_repository: false,
+exclude: 
+  repositories: 
+    - do_not_run_check_for_this_repo
+    - 'playground-*'
+    - test_repository
+    - '*-foobar'
 ```
 ## Action inputs
 The following inputs should be provided for every organization workflow.
