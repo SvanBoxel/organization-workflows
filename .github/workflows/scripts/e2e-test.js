@@ -47,10 +47,10 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }, { repository, should
   // Check whether check is created by this app
 
   if(shouldRun && !foundCheckRun) {
-    core.setFailed("central workflow wasn't triggered");
+    core.setFailed(`central workflow wasn't triggered, repo: ${repository}`);
   }
 
   if(!shouldRun && foundCheckRun) {
-    core.setFailed("central workflow was triggered (while is shouldn't");
+    core.setFailed(`central workflow was triggered (while is shouldn't), repo: ${repository}`);
   }
 }
