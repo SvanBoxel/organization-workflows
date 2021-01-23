@@ -3,6 +3,7 @@ import pick from "lodash.pick"
 
 import Run from '../models/runs.model'
 import { default_organization_repository, app_route, config_keys } from "../constants";
+import shouldRun from "../utils/should-run";
 
 export const repository_dispatch_type = 'org-workflow-bot'
 export const config_path = 'organization-workflows-settings.yml'
@@ -14,8 +15,22 @@ async function handlePush(context: Context): Promise<void> {
     path: config_path,
     defaults: {
       workflows_repository: default_organization_repository,
+      include_workflows_repository: false,
+      exclude: {
+        repositories: []
+      }
     }
   });
+
+  const excludedRepositories: string[] = config.exclude.repositories;
+
+  if (!config.include_workflows_repository) {
+    excludedRepositories.push(config.workflows_repository)
+  }
+
+  if(!shouldRun(context.payload.repository.name, excludedRepositories)) {
+    return;
+  }
 
   const sha = context.payload.after
   const webhook = await context.octokit.apps.getWebhookConfigForApp()

@@ -35,5 +35,6 @@ jobs:
             
             const app_id = envMap[env];
             const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`);
-            await script(app_id, "${{ env.TEST_ORG }}", {github, core});
             
+            await script(app_id, "${{ env.TEST_ORG }}", {github, core});
+            await script(app_id, "${{ env.TEST_ORG }}", {github, core}, { repoName: 'wildcard-test', shouldrun: false });

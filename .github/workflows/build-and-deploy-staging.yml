@@ -84,3 +84,5 @@ jobs:
           core.info(`Running e2e test for staging environment`);
           const script = require(`${process.env.GITHUB_WORKSPACE}/.github/workflows/scripts/e2e-test.js`);
           await script(${{ env.APP_ID_STAGING }}, "${{ env.TEST_ORG }}", {github, core});
+          await script(app_id, "${{ env.TEST_ORG }}", {github, core}, { repoName: 'exlude-me', shouldrun: false });
+          await script(app_id, "${{ env.TEST_ORG }}", {github, core}, { repoName: 'wildcard-test', shouldrun: false });

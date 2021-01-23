@@ -1,5 +1,5 @@
-module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
-  const repoName = Math.random().toString(36).substring(7)
+module.exports = async (APP_ID, TEST_ORG, { github, core }, { repoName, shouldRun = true }) => {
+  const repoName = Math.random().toString(36).substring(7);
   const buffer = new Buffer('Test commit');
   const content = buffer.toString('base64');
 
@@ -43,8 +43,14 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }) => {
     repo: repoName
   });
   
+  const foundCheckRun = checkResult.data.check_runs.some(check => check.app.id === APP_ID);
   // Check whether check is created by this app
-  if(!checkResult.data.check_runs.some(check => check.app.id === APP_ID)) {
+
+  if(shouldRun && !foundCheckRun) {
     core.setFailed("central workflow wasn't triggered");
+  }
+
+  if(!shouldRun && foundCheckRun) {
+    core.setFailed("central workflow was triggered (while is shouldn't");
   }
 }
