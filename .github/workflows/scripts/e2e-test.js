@@ -4,7 +4,7 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }, { repository, should
   const content = buffer.toString('base64');
 
   // Create repository
-  console.log('creating repository...')
+  console.log('creating repository...', repoName)
   await github.repos.createInOrg({
     org: TEST_ORG,
     name: repoName
@@ -26,7 +26,7 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }, { repository, should
   
   // Wait 45 seconds
   console.log('Waiting for run...')
-  await new Promise(r => setTimeout(r, 45000));
+  await new Promise(r => setTimeout(r, 60000));
   
   // Check whether commit check is created
   console.log('Checking result...')
@@ -47,10 +47,10 @@ module.exports = async (APP_ID, TEST_ORG, { github, core }, { repository, should
   // Check whether check is created by this app
 
   if(shouldRun && !foundCheckRun) {
-    core.setFailed(`central workflow wasn't triggered, repo: ${repository}`);
+    core.setFailed(`central workflow wasn't triggered, repo: ${repoName}`);
   }
 
   if(!shouldRun && foundCheckRun) {
-    core.setFailed(`central workflow was triggered (while is shouldn't), repo: ${repository}`);
+    core.setFailed(`central workflow was triggered (while is shouldn't), repo: ${repoName}`);
   }
 }
