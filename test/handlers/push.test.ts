@@ -113,19 +113,14 @@ describe('push handler', () => {
     test('should call octokit createDispatchEvent correct data', async () => {
       await handlePush(context);
       expect(context.octokit.repos.createDispatchEvent).toBeCalledWith({
-        owner: context.payload.repository.owner.login, 
+        owner: context.payload.repository.owner.login,
         repo: ".github",
         event_type: "org-workflow-bot",
         client_payload: {
-          sha: context.payload.after, 
+          id: id,
           token: token,
-          callback_url: `${callback_url}/org-workflows/register`, 
-          id: id, 
-          repository: { 
-            full_name: context.payload.repository.full_name, 
-            name: context.payload.repository.name, 
-            owner: context.payload.repository.owner.login, 
-          }
+          callback_url: `${callback_url}/org-workflows/register`,
+          ...event.payload
         }
       })
     })
