@@ -117,10 +117,16 @@ describe('push handler', () => {
         repo: ".github",
         event_type: "org-workflow-bot",
         client_payload: {
+          sha: context.payload.after,
           id: id,
           token: token,
           callback_url: `${callback_url}/org-workflows/register`,
-          ...event.payload
+          repository: {
+            full_name: context.payload.repository.full_name,
+            name: context.payload.repository.name,
+            owner: context.payload.repository.owner.login,
+          },
+          data: event.payload
         }
       })
     })

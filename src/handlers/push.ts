@@ -64,8 +64,8 @@ async function handlePush(context: Context): Promise<void> {
     client_payload: {
       id: _id.toString(),
       token: token.data.token,
-      callback_url: `${webhook.data.url}${app_route}/register`,
-      ...context.payload
+      ...data,
+      data: context.payload
     }
   })
 }
