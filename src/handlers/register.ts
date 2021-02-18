@@ -46,14 +46,13 @@ async function handleRegister(
 
   const checks_run = await octokit.checks.create(data)
 
-  if (enforce === 'true') {
-    enforceProtection(
-      octokit,
-      { owner: run.repository.owner, repo: run.repository.name },
-      data.name,
-      run.repository.name !== run.config.workflows_repository && enforce_admin === 'true' // Exclude the repository that contains the workflow. 
-    )
-  }
+  enforceProtection(
+    octokit,
+    { owner: run.repository.owner, repo: run.repository.name },
+    data.name,
+    enforce === 'true',
+    run.repository.name !== run.config.workflows_repository && enforce_admin === 'true' // Exclude the repository that contains the workflow. 
+  )
   
   const checkInfo: ICheck = {
     name: data.name,
