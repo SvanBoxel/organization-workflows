@@ -65,7 +65,7 @@ async function handlePush(context: Context): Promise<void> {
       id: _id.toString(),
       token: token.data.token,
       ...data,
-      data: context.payload
+      event: context.payload
     }
   })
 }

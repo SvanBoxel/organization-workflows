@@ -126,7 +126,7 @@ describe('push handler', () => {
             name: context.payload.repository.name,
             owner: context.payload.repository.owner.login,
           },
-          data: event.payload
+          event: event.payload
         }
       })
     })

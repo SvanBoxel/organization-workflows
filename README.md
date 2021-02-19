@@ -137,7 +137,7 @@ The following inputs should be provided for every organization workflow.
 ## Original event information
 
 The complete event generated in the repository that triggered the workflow is available at `${{ github.event.client_payload.data.<event_field_path> }}`.
-Checkout [Github's docs](https://docs.github.com/en/developers/webhooks-and-events) to see the information available in the event.
+Checkout [Github's docs](https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#push) to see the information available in the event.
 
 ## Development
 ### Codespaces
