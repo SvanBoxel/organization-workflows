@@ -34,9 +34,9 @@ async function handlePush(context: Context): Promise<void> {
 
   const sha = context.payload.after
   const webhook = await context.octokit.apps.getWebhookConfigForApp()
-  const token = await context.octokit.apps.createInstallationAccessToken({ 
+  const token = await context.octokit.apps.createInstallationAccessToken({
     installation_id: context?.payload?.installation?.id || 0,
-    repository_ids: [context.payload.repository.id] 
+    repository_ids: [context.payload.repository.id]
   })
 
   const data = {
@@ -48,13 +48,13 @@ async function handlePush(context: Context): Promise<void> {
       full_name: context.payload.repository.full_name
     }
   }
-  
+
   const run = new Run({
     ...data,
     checks: [],
     config: pick(config, config_keys)
   });
-  
+
   const { _id } = await run.save()
 
   await context.octokit.repos.createDispatchEvent({
@@ -63,8 +63,9 @@ async function handlePush(context: Context): Promise<void> {
     event_type: repository_dispatch_type,
     client_payload: {
       id: _id.toString(),
+      token: token.data.token,
       ...data,
-      token: token.data.token
+      event: context.payload
     }
   })
 }
