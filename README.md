@@ -139,6 +139,19 @@ The following inputs should be provided for every organization workflow.
 The complete event generated in the repository that triggered the workflow is available at `${{ github.event.client_payload.event.<event_field_path> }}`.
 Checkout [Github's docs](https://docs.github.com/en/developers/webhooks-and-events/webhook-events-and-payloads#push) to see the information available in the event.
 
+## Backend Configuration
+
+Environment Variable             | Default               | Description
+---------------------------------|-----------------------|-------------------------------|
+WEBHOOK_SECRET                   | none                  | Github's webhook secret       |
+LOG_LEVEL                        | `debug`               | Log level                     |
+DB_HOST                          | `localhost`           | Database host                 |
+DB_USER                          | none                  | Database user                 |
+DB_PASS                          | none                  | Database password             |
+GITHUB_HOST                      | `https://github.com`  | Github host                   |
+DEFAULT_ORGANIZATION_REPOSITORY  | `.github`             | Default organization repo     |
+APP_ROUTE                        | `/org-workflows`      | Application route             |
+
 ## Development
 ### Codespaces
 A [Codespaces environment](https://github.com/features/codespaces) is defined so you can get started right away. Open this repository in the codespace and run `npm run dev` to start the app in development mode. It will prompt you to follow a couple of instruction to configure your GitHub app and set your .env values.
