@@ -141,6 +141,8 @@ Checkout [Github's docs](https://docs.github.com/en/developers/webhooks-and-even
 
 ## Backend Configuration
 
+These envrionment variables only apply if you are self-hosting the `organization-workflows` webhook backend.
+
 Environment Variable             | Default               | Description
 ---------------------------------|-----------------------|-------------------------------|
 WEBHOOK_SECRET                   | none                  | Github's webhook secret       |
