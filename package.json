@@ -32,7 +32,7 @@
     "@types/jest": "^25.1.0",
     "@types/lodash.pick": "^4.4.6",
     "@types/nock": "^11.1.0",
-    "@types/node": "^13.1.0",
+    "@types/node": "^13.13.50",
     "@types/node-fetch": "^2.5.8",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
