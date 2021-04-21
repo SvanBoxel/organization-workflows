@@ -7,7 +7,8 @@
             "name": "Launch Server",
             "program": "${workspaceFolder}/src/index.ts",
             "cwd": "${workspaceFolder}",
-            "preLaunchTask": "npm: install"
+            "preLaunchTask": "tsc: build - tsconfig.json",
+            "outFiles": ["${workspaceFolder}/lib/**/*.js"],
         }
     ]
 }
