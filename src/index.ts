@@ -1,6 +1,7 @@
 import { Probot } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Request, Response } from "express";
 import fetch from "node-fetch";
+import { getEnv } from './utils/env-vars';
 import dbConnect from './db-connect';
 
 import handlePush from './handlers/push'
@@ -19,10 +20,11 @@ export default async (app: Probot, { getRouter }: { getRouter: any }) => {
   app.on('workflow_run.completed', handleCompletedRun);
   app.on('check_run.rerequested', handleReRun);
 
-  if (process.env.STATS_URI) {
+  const statsUri = getEnv('STATS_URI')
+  if (statsUri) {
     getRouter().get('/probot/stats', async (_: Request, res: Response) => {
       try {
-        const response = await fetch(process.env.STATS_URI as string);
+        const response = await fetch(statsUri as string);
         const stats = await response.json();
         res.status(200).json(stats)
       } catch (e) {
@@ -37,7 +39,7 @@ export default async (app: Probot, { getRouter }: { getRouter: any }) => {
     const status = connection === 'up' && dbState === 'connected' ? 200 : 503
     res.status(status).json({
       ...dbStatus(),
-      sha: process.env.SHA_REF || "unknown"
+      sha: getEnv('SHA_REF') || "unknown"
     })
   })
 }

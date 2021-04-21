@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
-const mongoUri = process.env.DB_HOST || 'localhost'
+import { getEnv } from './utils/env-vars';
+const mongoUri = getEnv('DB_HOST') || 'localhost'
 
 interface iStatus {
   connection: string,
@@ -10,9 +11,9 @@ let connection: string = 'down';
 async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
   try {
     await mongoose.connect(mongoUri, {
-      user: process.env.DB_USER,
-      pass: process.env.DB_PASS,
-      dbName: process.env.DB_NAME,
+      user: getEnv('DB_USER'),
+      pass: getEnv('DB_PASS'),
+      dbName: getEnv('DB_NAME'),
       useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true
