@@ -8,12 +8,24 @@ on:
     
 jobs:
   tfsec:
-    name: tfsec
+    name: Run tfsec sarif report
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Terraform security scan
-        uses: triat/terraform-security-scan@v2.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: Run tfsec
+        uses: aquasecurity/tfsec-sarif-action@9a83b5c3524f825c020e356335855741fd02745f
+        with:
+          sarif_file: tfsec.sarif         
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: tfsec.sarif  
