@@ -25,7 +25,7 @@ async function enforceProtection (
     console.error(e)
   }
 
-  const contexts = protection.data.required_status_checks.contexts;
+  const contexts = protection ? protection.data.required_status_checks.contexts : [];
   const enforce_admins_current_setting = protection && protection.data.enforce_admins.enabled
   const adminForceChange = enforce_admins_current_setting !== enforce_admin
   const contextIndex = contexts.indexOf(context_name)
@@ -57,7 +57,11 @@ async function enforceProtection (
     required_linear_history: protection && protection.data.required_linear_history.enabled,
     allow_force_pushes: protection && protection.data.allow_force_pushes.enabled,
     allow_deletions: protection && protection.data.allow_deletions.enabled,
-    restrictions: null
+    restrictions: protection && protection.data.restrictions ? {
+      apps: protection.data.restrictions.apps.map(({ slug } : { slug: string}) => slug),
+      users: protection.data.restrictions.users.map(({ login } : { login: string}) => login),
+      teams: protection.data.restrictions.teams.map(({ slug } : { slug: string}) => slug),
+    } : null,
   })
 
   return true;
