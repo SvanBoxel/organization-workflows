@@ -25,7 +25,7 @@ async function enforceProtection (
     console.error(e)
   }
 
-  const contexts = protection ? protection.data.required_status_checks.contexts : [];
+  const contexts = protection && protection.data.required_status_checks ? protection.data.required_status_checks.contexts : [];
   const enforce_admins_current_setting = protection && protection.data.enforce_admins.enabled
   const adminForceChange = enforce_admins_current_setting !== enforce_admin
   const contextIndex = contexts.indexOf(context_name)
