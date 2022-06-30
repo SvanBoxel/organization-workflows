@@ -121,6 +121,8 @@ The following inputs should be provided for every organization workflow.
 - **enforce_admin (optional)** Enforce [required status check](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/enabling-required-status-checks) for admins. _Default: false_
 - **documentation (optional)**: Link to documentation of this check. This is shown with the status check on the original commit. (eg `.github/workflows/compliance-info.md`) _Default: null_
 
+Note: if your default branch is covered only by a wildcard protection rule and you enable `enforce` or `enforce_admin`, the app will create a new branch protection rule covering only the default branch and copy the existing settings from the wildcard. Keep this in mind when making further changes on branch protection rules
+
 ```yml
     - uses: SvanBoxel/organization-workflow@main
       with:
