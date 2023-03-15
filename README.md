@@ -3,7 +3,7 @@
 ~This GitHub app allows you to run [GitHub Actions](https://github.com/features/actions) workflows across multiple repositories, which is [not yet natively supported](https://github.com/github/roadmap/issues/52). This app helps you - for example - to create a single workflow definition that is used for linting, compliance checks, and more.~
 
 > **Note**
-> Required workflows has shipped and this GitHub app will be deprecated on March 31st, 2023. https://docs.github.com/en/actions/using-workflows/required-workflows. You will still be able to [host the backend](https://github.com/SvanBoxel/organization-workflows/edit/main/README.md#development) supporting this app on your own (cloud) infrastructure. 
+> Required workflows has shipped and this GitHub app will be deprecated on March 31st, 2023. https://docs.github.com/en/actions/using-workflows/required-workflows. You will still be able to [host the backend](https://github.com/SvanBoxel/organization-workflows#backend-configuration) supporting this app on your own (cloud) infrastructure. 
 
 
 This app may not be right for you if your repositories contain confidential data. This app receives information about push events from your repositories, and persists information including the check ID, SHA, and run ID. You can optionally run the app yourself if you'd like to manage the deployment and data storage. See [Development](https://github.com/SvanBoxel/organization-workflows#development).
