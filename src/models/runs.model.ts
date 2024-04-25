@@ -64,7 +64,7 @@ try {
       { $set: { config: { workflows_repository: ".github" } } }
     );
 
-    if (response.modifiedCount > 0) {
+    if (response?.modifiedCount > 0) {
       console.log("updated", response.modifiedCount, "rows");
     }
   })();
