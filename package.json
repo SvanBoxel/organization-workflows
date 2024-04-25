@@ -46,7 +46,7 @@
     "typescript": "^5.4.5"
   },
   "engines": {
-    "node": ">= 12.x"
+    "node": ">= 18.x"
   },
   "eslintConfig": {
     "parserOptions": {
