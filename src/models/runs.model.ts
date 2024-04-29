@@ -5,7 +5,7 @@ const runExpiry = 60 * 60 * 24 * 90 // 90 days
 export interface ICheck {
   run_id: number; // The run in the central workflow
   name?: string; // Name of the status check
-  checks_run_id: number // ID of status check on commit
+  checks_run_id: number; // ID of status check on commit
 }
 
 export interface IRun extends mongoose.Document {
@@ -15,24 +15,22 @@ export interface IRun extends mongoose.Document {
   repository: {
     owner: string;
     name: string;
-    full_name: string
-  };
+    full_name: string;
+  },
   config: {
-    workflows_repository: string
-  };
+    workflows_repository: string;
+  }
   expire_at?: Date
 }
 
 export const RunSchema = new mongoose.Schema({
   sha: String,
   callback_url: String,
-  checks: [
-    {
+  checks: [{
       run_id: Number,
       name: String,
       checks_run_id: Number,
-    },
-  ],
+  }],
   repository: {
     owner: String,
     name: String,

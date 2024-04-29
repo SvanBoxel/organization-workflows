@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 const mongoUri = process.env.DB_HOST || 'localhost'
 
 interface iStatus {
-  connection: string
+  connection: string,
   dbState: string
 }
 
@@ -16,10 +16,10 @@ async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
     })
 
     connection = 'up'
-    console.log('DB connection established')
+    console.log('DB connection established');
   } catch (e) {
-    connection = 'down'
-    throw e
+    connection = 'down';
+    throw e;
   }
 
   return { dbStatus }
