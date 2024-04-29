@@ -1,7 +1,7 @@
-import { Context } from "probot"; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 
 async function enforceProtection(
-  octokit: Context["octokit"],
+  octokit: Context['octokit'],
   repository: { owner: string; repo: string },
   context_name: string,
   enforce: boolean,
@@ -10,38 +10,38 @@ async function enforceProtection(
   const repo = await octokit.repos.get({
     ...repository,
     mediaType: {
-      previews: ["symmetra"],
+      previews: ['symmetra'],
     },
-  });
+  })
 
-  let protection: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  let protection: any // eslint-disable-line @typescript-eslint/no-explicit-any
 
   try {
     protection = await octokit.repos.getBranchProtection({
       ...repository,
       branch: repo.data.default_branch,
-    });
+    })
   } catch (e) {
-    console.error(e);
+    console.error(e)
   }
 
   const contexts =
-    protection && protection.data.required_status_checks ? protection.data.required_status_checks.contexts : [];
-  const enforce_admins_current_setting = protection && protection.data.enforce_admins.enabled;
-  const adminForceChange = enforce_admins_current_setting !== enforce_admin;
-  const contextIndex = contexts.indexOf(context_name);
+    protection && protection.data.required_status_checks ? protection.data.required_status_checks.contexts : []
+  const enforce_admins_current_setting = protection && protection.data.enforce_admins.enabled
+  const adminForceChange = enforce_admins_current_setting !== enforce_admin
+  const contextIndex = contexts.indexOf(context_name)
 
   // noop actions
   if (!adminForceChange) {
     // Admin enforce didn't change
-    if (contextIndex > -1 && enforce) return false; // Context is already enforced
-    if (contextIndex === -1 && !enforce) return false; // Context isn't enforced and shouldn't be.
+    if (contextIndex > -1 && enforce) return false // Context is already enforced
+    if (contextIndex === -1 && !enforce) return false // Context isn't enforced and shouldn't be.
   }
 
   if (contextIndex > -1 && !enforce) {
-    contexts.splice(contextIndex, 1);
+    contexts.splice(contextIndex, 1)
   } else if (contextIndex === -1 && enforce) {
-    contexts.push(context_name);
+    contexts.push(context_name)
   }
 
   await octokit.repos.updateBranchProtection({
@@ -73,9 +73,9 @@ async function enforceProtection(
             teams: protection.data.restrictions.teams.map(({ slug }: { slug: string }) => slug),
           }
         : null,
-  });
+  })
 
-  return true;
+  return true
 }
 
-export default enforceProtection;
+export default enforceProtection

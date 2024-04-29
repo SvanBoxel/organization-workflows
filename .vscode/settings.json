@@ -1,8 +1,10 @@
 {
-    "eslint.workingDirectories": [
-        {
-            "directory": ".",
-            "changeProcessCWD": true
-        }
-    ]
+  "eslint.workingDirectories": [
+    {
+      "directory": ".",
+      "changeProcessCWD": true
+    }
+  ],
+  "prettier.singleQuote": true,
+  "prettier.semi": false
 }

@@ -63,6 +63,12 @@
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended"
-    ]
+    ],
+    "rules": {
+      "quotes": [
+        "warn",
+        "single"
+      ]
+    }
   }
 }

@@ -1,11 +1,11 @@
-import * as mongoose from "mongoose";
+import * as mongoose from 'mongoose'
 
-const runExpiry = 60 * 60 * 24 * 90; // 90 days
+const runExpiry = 60 * 60 * 24 * 90 // 90 days
 
 export interface ICheck {
   run_id: number; // The run in the central workflow
   name?: string; // Name of the status check
-  checks_run_id: number; // ID of status check on commit
+  checks_run_id: number // ID of status check on commit
 }
 
 export interface IRun extends mongoose.Document {
@@ -15,12 +15,12 @@ export interface IRun extends mongoose.Document {
   repository: {
     owner: string;
     name: string;
-    full_name: string;
+    full_name: string
   };
   config: {
-    workflows_repository: string;
+    workflows_repository: string
   };
-  expire_at?: Date;
+  expire_at?: Date
 }
 
 export const RunSchema = new mongoose.Schema({
@@ -41,7 +41,7 @@ export const RunSchema = new mongoose.Schema({
   config: {
     workflows_repository: String,
   },
-});
+})
 
 RunSchema.index(
   {
@@ -52,22 +52,22 @@ RunSchema.index(
     sparse: true,
     expireAfterSeconds: runExpiry,
   }
-);
+)
 
-const Run = mongoose.model<IRun>("Run", RunSchema);
+const Run = mongoose.model<IRun>('Run', RunSchema)
 
 // Update existing document with config.workflows_repository field
 try {
   (async () => {
     const response = await Run.updateOne(
-      { "config.workflows_repository": { $exists: false } },
-      { $set: { config: { workflows_repository: ".github" } } }
-    );
+      { 'config.workflows_repository': { $exists: false } },
+      { $set: { config: { workflows_repository: '.github' } } }
+    )
 
-    console.log("updated", response?.modifiedCount, "rows");
-  })();
+    console.log('updated', response?.modifiedCount, 'rows')
+  })()
 } catch (e) {
-  console.error(e);
+  console.error(e)
 }
 
-export default Run;
+export default Run
