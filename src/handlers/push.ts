@@ -56,7 +56,7 @@ async function handlePush(context: Context): Promise<void> {
 
   const { _id } = await run.save()
 
-  const response = await context.octokit.repos.createDispatchEvent({
+  await context.octokit.repos.createDispatchEvent({
     owner: context.payload.repository.owner.login,
     repo: config.workflows_repository,
     event_type: repository_dispatch_type,
