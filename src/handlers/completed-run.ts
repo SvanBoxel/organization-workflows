@@ -2,8 +2,6 @@ import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-un
 import Runs from '../models/runs.model'
  
 async function handleCompletedRun(context: Context): Promise<void> {
-  console.debug('Handling completed run')
-
   if (!context.payload.workflow_run.id) return;
   const run = await Runs.findOne({ 'checks.run_id': { $in: context.payload.workflow_run.id }})
 

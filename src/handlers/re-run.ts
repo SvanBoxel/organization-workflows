@@ -2,7 +2,6 @@ import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-un
 import Runs from '../models/runs.model'
 
 async function handleReRun(context: Context): Promise<void> {
-  console.debug('Handling Re run event')
   if (!context?.payload?.check_run?.id) return
 
   const run = await Runs.findOne({ 'checks.checks_run_id': { $in: context.payload.check_run.id }})
