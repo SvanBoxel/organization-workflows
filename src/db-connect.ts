@@ -26,9 +26,9 @@ async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
 }
 
 function dbStatus(): iStatus  {
-  return {
-    connection,
-    dbState: mongoose.STATES[mongoose.connection.readyState]
+  return { 
+    connection, 
+    dbState: mongoose.STATES[mongoose.connection.readyState] 
   }
 };
 
