@@ -7,13 +7,13 @@ import enforceProtection from '../utils/enforce-protection'
 import { github_host } from "../constants";
 
 async function handleRegister(
-  req: Request,
-  res: Response,
+  req: Request, 
+  res: Response, 
   { app }: { app: Probot}
 ) {
   const { id, run_id, name, sha, enforce, enforce_admin, documentation } = req.query
   const run = await Runs.findById(id);
-
+  
   if (!run) return res.sendStatus(404)
   if (run.sha !== sha) return res.sendStatus(404) // Although unlikely, make sure that people can't create checks by submitting random IDs (mongoose IDs are not-so-random)
 
@@ -52,9 +52,9 @@ async function handleRegister(
     { owner: run.repository.owner, repo: run.repository.name },
     data.name,
     enforce === 'true',
-    run.repository.name !== run.config.workflows_repository && enforce_admin === 'true' // Exclude the repository that contains the workflow.
+    run.repository.name !== run.config.workflows_repository && enforce_admin === 'true' // Exclude the repository that contains the workflow. 
   )
-
+  
   const checkInfo: ICheck = {
     name: data.name,
     run_id: Number(run_id),
@@ -62,7 +62,7 @@ async function handleRegister(
   };
 
   await Runs.findByIdAndUpdate(
-    id,
+    id, 
     { $push: { checks: checkInfo } }
   )
 
