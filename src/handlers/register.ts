@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: 0 */
 import { Probot } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 import { Request, Response } from "express";
 
@@ -9,7 +10,7 @@ async function handleRegister(
   req: Request, 
   res: Response, 
   { app }: { app: Probot}
-): Promise<any> {
+) {
   const { id, run_id, name, sha, enforce, enforce_admin, documentation } = req.query
   const run = await Runs.findById(id);
   

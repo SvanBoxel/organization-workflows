@@ -11,7 +11,7 @@ async function handleCompletedRun(context: Context): Promise<void> {
   const check = run.checks.find((check) => check.run_id === context.payload.workflow_run.id )
   if (!check) return;
 
-  const data: any = {
+  const data = {
     owner: run.repository.owner,
     repo: run.repository.name,
     check_run_id: check.checks_run_id,

@@ -44,25 +44,28 @@ export const RunSchema = new mongoose.Schema({
 RunSchema.index(
   { 
     createdAt: 1,
+  },
+  {
     unique: true,
     sparse: true,
-  }, { 
-    expireAfterSeconds: runExpiry 
-  })
-  
+    expireAfterSeconds: runExpiry,
+  }
+)
+
 const Run = mongoose.model<IRun>('Run', RunSchema)
 
 // Update existing document with config.workflows_repository field
-Run.update(
-  { 'config.workflows_repository': { $exists:false } },
-  { $set: {'config': { workflows_repository: '.github'}} },
-  { new: true, multi: true }, 
-  function(err, numberAffected) {  
-    if (err) return console.error(err);
-    if (numberAffected?.ok) {
-      console.log('updated', numberAffected.nModified, 'rows')
-    }
-  }
-) 
+try {
+  (async () => {
+    const response = await Run.updateOne(
+      { 'config.workflows_repository': { $exists: false } },
+      { $set: { config: { workflows_repository: '.github' } } }
+    )
+
+    console.log('updated', response?.modifiedCount, 'rows')
+  })()
+} catch (e) {
+  console.error(e)
+}
 
 export default Run

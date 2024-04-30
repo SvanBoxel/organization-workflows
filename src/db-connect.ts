@@ -13,9 +13,6 @@ async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
       user: process.env.DB_USER,
       pass: process.env.DB_PASS,
       dbName: process.env.DB_NAME,
-      useFindAndModify: false,
-      useNewUrlParser: true,
-      useUnifiedTopology: true
     })
 
     connection = 'up'
@@ -37,5 +34,4 @@ function dbStatus(): iStatus  {
 
 export { dbStatus }
 export default dbConnect;
-
 

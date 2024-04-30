@@ -14,7 +14,7 @@ async function enforceProtection (
     }
   })
   
-  let protection: any;
+  let protection: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   try {
     protection = await octokit.repos.getBranchProtection({
