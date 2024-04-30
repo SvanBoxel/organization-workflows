@@ -27,18 +27,18 @@ export const RunSchema = new mongoose.Schema({
   sha: String,
   callback_url: String,
   checks: [{
-      run_id: Number,
-      name: String,
-      checks_run_id: Number,
+    run_id: Number,
+    name: String,
+    checks_run_id: Number
   }],
   repository: {
     owner: String,
     name: String,
-    full_name: String,
+    full_name: String
   },
   config: {
-    workflows_repository: String,
-  },
+    workflows_repository: String
+  }
 })
 
 RunSchema.index(

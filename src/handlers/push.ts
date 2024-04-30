@@ -1,9 +1,9 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
-import pick from 'lodash.pick'
+import pick from "lodash.pick"
 
 import Run from '../models/runs.model'
-import { default_organization_repository, app_route, config_keys, repository_dispatch_type } from '../constants'
-import shouldRun from '../utils/should-run'
+import { default_organization_repository, app_route, config_keys, repository_dispatch_type } from "../constants";
+import shouldRun from "../utils/should-run";
 
 export const config_path = 'organization-workflows-settings.yml'
 
@@ -18,26 +18,26 @@ async function handlePush(context: Context): Promise<void> {
       workflows_repository: default_organization_repository,
       include_workflows_repository: false,
       exclude: {
-        repositories: [],
-      },
-    },
-  })
+        repositories: []
+      }
+    }
+  });
 
-  const excludedRepositories: string[] = config.exclude.repositories
+  const excludedRepositories: string[] = config.exclude.repositories;
 
   if (!config.include_workflows_repository) {
     excludedRepositories.push(config.workflows_repository)
   }
 
-  if (!shouldRun(context.payload.repository.name, excludedRepositories)) {
-    return
+  if(!shouldRun(context.payload.repository.name, excludedRepositories)) {
+    return;
   }
 
   const sha = context.payload.after
   const webhook = await context.octokit.apps.getWebhookConfigForApp()
   const token = await context.octokit.apps.createInstallationAccessToken({
     installation_id: context?.payload?.installation?.id || 0,
-    repository_ids: [context.payload.repository.id],
+    repository_ids: [context.payload.repository.id]
   })
 
   const data = {
@@ -46,15 +46,15 @@ async function handlePush(context: Context): Promise<void> {
     repository: {
       owner: context.payload.repository.owner.login,
       name: context.payload.repository.name,
-      full_name: context.payload.repository.full_name,
-    },
+      full_name: context.payload.repository.full_name
+    }
   }
 
   const run = new Run({
     ...data,
     checks: [],
-    config: pick(config, config_keys),
-  })
+    config: pick(config, config_keys)
+  });
 
   const { _id } = await run.save()
 
@@ -66,10 +66,10 @@ async function handlePush(context: Context): Promise<void> {
       id: _id.toString(),
       token: token.data.token,
       ...data,
-      event: context.payload,
-    },
+      event: context.payload
+    }
   })
   console.debug('Event dispatched', config.workflows_repository, JSON.stringify(data), JSON.stringify(response))
 }
 
-export default handlePush
+export default handlePush;

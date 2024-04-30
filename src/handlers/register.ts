@@ -1,14 +1,18 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import { Probot } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
-import { Request, Response } from 'express'
+import { Request, Response } from "express";
 
 import Runs, { ICheck } from '../models/runs.model'
 import enforceProtection from '../utils/enforce-protection'
-import { github_host } from '../constants'
+import { github_host } from "../constants";
 
-async function handleRegister(req: Request, res: Response, { app }: { app: Probot }) {
+async function handleRegister(
+  req: Request,
+  res: Response,
+  { app }: { app: Probot }
+) {
   const { id, run_id, name, sha, enforce, enforce_admin, documentation } = req.query
-  const run = await Runs.findById(id)
+  const run = await Runs.findById(id);
 
   if (!run) return res.sendStatus(404)
   if (run.sha !== sha) return res.sendStatus(404) // Although unlikely, make sure that people can't create checks by submitting random IDs (mongoose IDs are not-so-random)
@@ -19,7 +23,7 @@ async function handleRegister(req: Request, res: Response, { app }: { app: Probo
     head_sha: run.sha,
     name: name as string,
     details_url: `${github_host}/${run.repository.owner}/${run.config.workflows_repository}/actions/runs/${run_id}`,
-    status: 'in_progress',
+    status: 'in_progress'
   }
 
   let octokit = await app.auth()
@@ -31,7 +35,7 @@ async function handleRegister(req: Request, res: Response, { app }: { app: Probo
       const docs = await octokit.repos.getContent({
         owner: run.repository.owner,
         repo: run.config.workflows_repository,
-        path: documentation as string,
+        path: documentation as string
       })
 
       const summary = Buffer.from((docs.data as any).content, (docs.data as any).encoding).toString()
@@ -54,10 +58,13 @@ async function handleRegister(req: Request, res: Response, { app }: { app: Probo
   const checkInfo: ICheck = {
     name: data.name,
     run_id: Number(run_id),
-    checks_run_id: checks_run.data.id,
-  }
+    checks_run_id: checks_run.data.id
+  };
 
-  await Runs.findByIdAndUpdate(id, { $push: { checks: checkInfo } })
+  await Runs.findByIdAndUpdate(
+    id,
+    { $push: { checks: checkInfo } }
+  )
 
   return res.sendStatus(200)
 }

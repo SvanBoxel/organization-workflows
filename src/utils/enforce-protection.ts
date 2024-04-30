@@ -1,8 +1,8 @@
 import { Context } from 'probot' // eslint-disable-line @typescript-eslint/no-unused-vars
 
-async function enforceProtection(
+async function enforceProtection (
   octokit: Context['octokit'],
-  repository: { owner: string; repo: string },
+  repository: { owner: string, repo: string },
   context_name: string,
   enforce: boolean,
   enforce_admin = false
@@ -10,36 +10,34 @@ async function enforceProtection(
   const repo = await octokit.repos.get({
     ...repository,
     mediaType: {
-      previews: ['symmetra'],
-    },
+      previews: ['symmetra']
+    }
   })
 
-  let protection: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  let protection: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   try {
     protection = await octokit.repos.getBranchProtection({
       ...repository,
-      branch: repo.data.default_branch,
+      branch: repo.data.default_branch
     })
   } catch (e) {
     console.error(e)
   }
 
-  const contexts =
-    protection && protection.data.required_status_checks ? protection.data.required_status_checks.contexts : []
+  const contexts = protection && protection.data.required_status_checks ? protection.data.required_status_checks.contexts : [];
   const enforce_admins_current_setting = protection && protection.data.enforce_admins.enabled
   const adminForceChange = enforce_admins_current_setting !== enforce_admin
   const contextIndex = contexts.indexOf(context_name)
 
   // noop actions
-  if (!adminForceChange) {
-    // Admin enforce didn't change
-    if (contextIndex > -1 && enforce) return false // Context is already enforced
-    if (contextIndex === -1 && !enforce) return false // Context isn't enforced and shouldn't be.
+  if (!adminForceChange) { // Admin enforce didn't change
+    if (contextIndex > -1 && enforce) return false; // Context is already enforced
+    if (contextIndex === -1 && !enforce) return false; // Context isn't enforced and shouldn't be.
   }
 
   if (contextIndex > -1 && !enforce) {
-    contexts.splice(contextIndex, 1)
+    contexts.splice(contextIndex, 1);
   } else if (contextIndex === -1 && enforce) {
     contexts.push(context_name)
   }
@@ -49,33 +47,24 @@ async function enforceProtection(
     branch: repo.data.default_branch,
     required_status_checks: {
       strict: protection ? protection.data.required_status_checks.strict : false,
-      contexts,
+      contexts
     },
     enforce_admins: adminForceChange ? !enforce_admins_current_setting : enforce_admins_current_setting,
-    required_pull_request_reviews: protection?.data?.required_pull_request_reviews
-      ? {
-          dismiss_stale_reviews: protection
-            ? protection.data.required_pull_request_reviews.dismiss_stale_reviews
-            : false,
-          require_code_owner_reviews: protection
-            ? protection.data.required_pull_request_reviews.require_code_owner_reviews
-            : 0,
-        }
-      : null,
+    required_pull_request_reviews: protection?.data?.required_pull_request_reviews ? {
+      dismiss_stale_reviews: protection ? protection.data.required_pull_request_reviews.dismiss_stale_reviews : false,
+      require_code_owner_reviews: protection ? protection.data.required_pull_request_reviews.require_code_owner_reviews : 0
+    } : null,
     required_linear_history: protection && protection.data.required_linear_history.enabled,
     allow_force_pushes: protection && protection.data.allow_force_pushes.enabled,
     allow_deletions: protection && protection.data.allow_deletions.enabled,
-    restrictions:
-      protection && protection.data.restrictions
-        ? {
-            apps: protection.data.restrictions.apps.map(({ slug }: { slug: string }) => slug),
-            users: protection.data.restrictions.users.map(({ login }: { login: string }) => login),
-            teams: protection.data.restrictions.teams.map(({ slug }: { slug: string }) => slug),
-          }
-        : null,
+    restrictions: protection && protection.data.restrictions ? {
+      apps: protection.data.restrictions.apps.map(({ slug }: { slug: string }) => slug),
+      users: protection.data.restrictions.users.map(({ login }: { login: string }) => login),
+      teams: protection.data.restrictions.teams.map(({ slug }: { slug: string }) => slug),
+    } : null,
   })
 
-  return true
+  return true;
 }
 
 export default enforceProtection

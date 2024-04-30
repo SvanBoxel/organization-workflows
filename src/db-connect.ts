@@ -6,7 +6,7 @@ interface iStatus {
   dbState: string
 }
 
-let connection = 'down'
+let connection = 'down';
 async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
   try {
     await mongoose.connect(mongoUri, {
@@ -16,7 +16,7 @@ async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
     })
 
     connection = 'up'
-    console.log('DB connection established');
+    console.log("DB connection established");
   } catch (e) {
     connection = 'down';
     throw e;
@@ -25,12 +25,12 @@ async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
   return { dbStatus }
 }
 
-function dbStatus(): iStatus {
+function dbStatus(): iStatus  {
   return {
     connection,
-    dbState: mongoose.STATES[mongoose.connection.readyState],
+    dbState: mongoose.STATES[mongoose.connection.readyState]
   }
-}
+};
 
 export { dbStatus }
-export default dbConnect
+export default dbConnect;
