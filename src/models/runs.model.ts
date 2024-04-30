@@ -42,7 +42,7 @@ export const RunSchema = new mongoose.Schema({
 })
 
 RunSchema.index(
-  {
+  { 
     createdAt: 1,
   },
   {

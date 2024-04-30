@@ -6,7 +6,7 @@ interface iStatus {
   dbState: string
 }
 
-let connection = 'down';
+let connection: string = 'down';
 async function dbConnect(): Promise<{ dbStatus: () => iStatus }> {
   try {
     await mongoose.connect(mongoUri, {

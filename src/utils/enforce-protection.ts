@@ -13,7 +13,7 @@ async function enforceProtection (
       previews: ['symmetra']
     }
   })
-
+  
   let protection: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   try {
@@ -58,9 +58,9 @@ async function enforceProtection (
     allow_force_pushes: protection && protection.data.allow_force_pushes.enabled,
     allow_deletions: protection && protection.data.allow_deletions.enabled,
     restrictions: protection && protection.data.restrictions ? {
-      apps: protection.data.restrictions.apps.map(({ slug }: { slug: string }) => slug),
-      users: protection.data.restrictions.users.map(({ login }: { login: string }) => login),
-      teams: protection.data.restrictions.teams.map(({ slug }: { slug: string }) => slug),
+      apps: protection.data.restrictions.apps.map(({ slug } : { slug: string }) => slug),
+      users: protection.data.restrictions.users.map(({ login } : { login: string }) => login),
+      teams: protection.data.restrictions.teams.map(({ slug } : { slug: string }) => slug),
     } : null,
   })
 

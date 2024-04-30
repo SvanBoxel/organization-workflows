@@ -9,7 +9,7 @@ import { github_host } from "../constants";
 async function handleRegister(
   req: Request,
   res: Response,
-  { app }: { app: Probot }
+  { app }: { app: Probot}
 ) {
   const { id, run_id, name, sha, enforce, enforce_admin, documentation } = req.query
   const run = await Runs.findById(id);
